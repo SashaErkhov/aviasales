@@ -22,31 +22,7 @@ int main()
 	//y.addElement(2);
 	//std::cout << "new y[2] = " << (int)y.getElement(2) << std::endl;
 
-	std::cout << "> ";
-	unsigned char* str = new unsigned char[1000];
-	std::cin.getline((char*)(str), 1000);
-	Arry command;
-	for (int i = 0; i < 1000; ++i)
-	{
-		if (str[i] != ' ')
-		{
-			command.addElement(str[i]);
-		}
-		else
-		{
-			break;
-		}
-	}
-	command.addElement('\0');
-
-	std::cout << command.getSize() << std::endl;
-
-	if ((const char*)(command.m_bytes) == "load")
-	{
-		std::cout << "hi"<<std::endl;
-		//todo:
-	}
-	delete[] str;
+	
 
 	std::system("pause");
 	return 0;
