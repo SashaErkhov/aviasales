@@ -44,10 +44,10 @@ int main()
 	{
 		std::cout << error << std::endl;
 	}*/
-	std::cout << "test = 44.01.2034 12:01" << std::endl;
+	std::cout << "test = 24.01.2034 12:01" << std::endl;
 	try
 	{
-		DataTime x("44.01.2034 12:01", 16);
+		DataTime x("24.01.2034 12:01", 16);
 		std::cout << "real = " << x << std::endl;
 	}
 	catch (const char* error)
