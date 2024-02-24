@@ -23,6 +23,7 @@ public:
 	short getYear() const { return year; }
 	short getHours() const { return hours; }
 	short getMinutes() const { return minutes; }
+	bool operator<(const DataTime& right);
 };
 
 #endif // !DATA_TIME_CLASS_PVM_2023

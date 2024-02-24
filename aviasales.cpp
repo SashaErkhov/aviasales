@@ -8,6 +8,7 @@ int main()
 {
 	unsigned char* str = new unsigned char[1000];
 	DataBase DB;
+	unsigned int IDnow = 0;
 	do
 	{
 		std::cout << "> ";
@@ -44,22 +45,32 @@ int main()
 		else if (command.m_bytes[0] == 'a' and command.m_bytes[1] == 'd' and
 			command.m_bytes[2] == 'd' and command.size == 3)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			DB.addElement(AviaTickets(str,1000,++IDnow));
 		}
 		else if (command.m_bytes[0] == 'd' and command.m_bytes[1] == 'e' and
 			command.m_bytes[2] == 'l' and command.m_bytes[3] == 'e' and 
 			command.m_bytes[4] == 't' and command.m_bytes[5] == 'e' and command.size == 6)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			Arry id;
+			for (int i = 7; i < 1000; ++i)
+			{
+				if (str[i] != 0)
+				{
+					id.addElement(str[i]);
+				}
+			}
+			if (id.size == 0)
+			{
+				std::cout << "Unknown command" << std::endl;
+				continue;
+			}
+			DB.deleteDB((unsigned int)std::atoi((char*)id.m_bytes));
 		}
 		else if (command.m_bytes[0] == 'c' and command.m_bytes[1] == 'l' and
 			command.m_bytes[2] == 'e' and command.m_bytes[3] == 'a' and
 			command.m_bytes[4] == 'r' and command.size == 5)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			DB.clearDB();
 		}
 		else if (command.m_bytes[0] == 'p' and command.m_bytes[1] == 'r' and
 			command.m_bytes[2] == 'i' and command.m_bytes[3] == 'n' and

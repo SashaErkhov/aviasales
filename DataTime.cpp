@@ -169,24 +169,6 @@ DataTime::DataTime()
 
 std::ostream& operator<<(std::ostream& out, const DataTime& x)
 {
-	if (x.getDay() < 10)
-	{
-		out << '0' << x.getDay();
-	}
-	else
-	{
-		out << x.getDay();;
-	}
-	out << '.';
-	if (x.getMonth() < 10)
-	{
-		out << '0' << x.getMonth();
-	}
-	else
-	{
-		out << x.getMonth();
-	}
-	out << '.';
 	if (x.getYear() < 10)
 	{
 		out << "000" << x.getYear();
@@ -202,6 +184,24 @@ std::ostream& operator<<(std::ostream& out, const DataTime& x)
 	else
 	{
 		out << x.getYear();
+	}
+	out << '.';
+	if (x.getMonth() < 10)
+	{
+		out << '0' << x.getMonth();
+	}
+	else
+	{
+		out << x.getMonth();
+	}
+	out << '.';
+	if (x.getDay() < 10)
+	{
+		out << '0' << x.getDay();
+	}
+	else
+	{
+		out << x.getDay();;
 	}
 	out << ' ';
 	if (x.getHours() < 10)
@@ -222,4 +222,14 @@ std::ostream& operator<<(std::ostream& out, const DataTime& x)
 		out << x.getMinutes();
 	}
 	return out;
+}
+
+bool DataTime::operator<(const DataTime& right)
+{
+	if (this->year < right.year) { return true; }
+	if (this->month < right.month) { return true; }
+	if (this->day < right.day) { return true; }
+	if (this->hours < right.hours) { return true; }
+	if (this->minutes < right.minutes) { return true; }
+	return false;
 }

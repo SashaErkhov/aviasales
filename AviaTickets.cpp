@@ -4,7 +4,7 @@
 
 AviaTickets::AviaTickets(char* nomberOfFlight, char* airportFrom, char* airportTo,
 	const DataTime& DTFrom, const DataTime& DTTo, unsigned long long int cntTickets,
-	long double priceTickets)
+	long double priceTickets,unsigned int ID)
 {
 	for (int i = 0; i < 7; ++i)
 	{
@@ -19,6 +19,7 @@ AviaTickets::AviaTickets(char* nomberOfFlight, char* airportFrom, char* airportT
 	this->DTTo = DTTo;
 	this->cntTickets = cntTickets;
 	this->priceTickets = priceTickets;
+	this->ID = ID;
 }
 
 bool fooKons(Arry& x, const unsigned char* str, unsigned int startIndex,unsigned int strSize)
@@ -52,9 +53,10 @@ AviaTickets::AviaTickets()
 	DTTo= DataTime();
 	cntTickets=0;
 	priceTickets=0;
+	ID = 0;
 }
 
-AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize)
+AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned int ID)
 {
 	//add номер_рейса, аэропорт_вылета, аэропорт_прибытия, дата_и_время_вылета, дата_и_время_прилёта, количество_билетов, цена
 	//add CA-909, PKX, SVO, 19.02.2024 8:40, 19.02.2024 17:00, 5, 80499
@@ -144,6 +146,34 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize)
 		throw "Unknown command";
 	}
 	this->priceTickets = std::atof((char*)price.m_bytes);
+	this->ID = ID;
+	if (DTTo < DTFrom)
+	{
+		throw "Wrong arrival time";
+	}
+}
+
+bool AviaTickets::operator<(const AviaTickets& right)const
+{
+	if (this->DTFrom.getYear() < right.DTFrom.getYear()) { return true; }
+	if (this->DTFrom.getMonth() < right.DTFrom.getMonth()) { return true; }
+	if (this->DTFrom.getDay() < right.DTFrom.getDay()) { return true; }
+	if (this->DTFrom.getHours() < right.DTFrom.getHours()) { return true; }
+	if (this->DTFrom.getMinutes() < right.DTFrom.getMinutes()) { return true; }
+	return false;
+}
+
+bool AviaTickets::operator<=(const AviaTickets& right)const
+{
+	if (this->priceTickets < right.priceTickets)
+	{
+		return true;
+	}
+	else if (this->priceTickets == right.priceTickets)
+	{
+		return (*this) < right;
+	}
+	return false;
 }
 
 DataBase::DataBase(unsigned long long int size)
@@ -177,4 +207,144 @@ void DataBase::addElement(const AviaTickets& input)
 	tmp.data[size] = input;
 	std::swap(data, tmp.data);
 	++size;
+}
+
+void DataBase::deleteDB(unsigned int ID)
+{
+	unsigned int index=-1;
+	for (int i = 0; i < size; ++i)
+	{
+		if (this->data[i].getID() == ID)
+		{
+			index = i;
+		}
+	}
+	if (index == -1) { return; }
+	DataBase tmp(size - 1);
+	for (int i = 0; i < index; ++i)
+	{
+		tmp.data[i] = this->data[i];
+	}
+	for (int i = index + 1; i < size; ++i)
+	{
+		tmp.data[i] = this->data[i];
+	}
+	std::swap(tmp.data, this->data);
+	std::swap(tmp.size, this->size);
+}
+
+void DataBase::clearDB()
+{
+	for (int i = 0; i < size; ++i)
+	{
+		if (this->data[i].getCntTickets() == 0)
+		{
+			this->deleteDB(this->data[i].getID());
+		}
+	}
+}
+
+void DataBase::sortingData()
+{
+	// make heap
+	for (int i = size / 2; i >= 0; --i) {
+		// shift down each element
+		int pos = i;
+		int posMaxChild;
+		while ((posMaxChild = 2 * pos + 1) < size) {
+			if (posMaxChild + 1 < size) {
+				if (data[posMaxChild] < data[posMaxChild + 1]) {
+					++posMaxChild;
+				}
+			}
+			if (data[pos] < data[posMaxChild]) {
+				std::swap(data[pos], data[posMaxChild]);
+				pos = posMaxChild;
+			}
+			else {
+				break;
+			}
+		}
+	}
+	// shift down each element
+	int heapSize = size;
+	for (int step = 1; step < size; ++step) {
+		if (data[heapSize - 1] < data[0]) {
+			std::swap(data[heapSize - 1], data[0]);
+		}
+		--heapSize;
+		int position = 0;
+		int posMaxChild;
+		while ((posMaxChild = 2 * position + 1) < heapSize) {// Пока есть левый потомок
+			if (posMaxChild + 1 < heapSize) { // Есть ещё кто-то и справа
+				if (data[posMaxChild] < data[posMaxChild + 1]) {
+					++posMaxChild;
+				}
+			}
+			if (data[position] < data[posMaxChild]) {
+				std::swap(data[position], data[posMaxChild]);
+				position = posMaxChild;
+			}
+			else {
+				break;
+			}
+		}
+	}
+}
+
+void DataBase::sortingPrice()
+{
+	// make heap
+	for (int i = size / 2; i >= 0; --i) {
+		// shift down each element
+		int pos = i;
+		int posMaxChild;
+		while ((posMaxChild = 2 * pos + 1) < size) {
+			if (posMaxChild + 1 < size) {
+				if (data[posMaxChild] <= data[posMaxChild + 1]) {
+					++posMaxChild;
+				}
+			}
+			if (data[pos] <= data[posMaxChild]) {
+				std::swap(data[pos], data[posMaxChild]);
+				pos = posMaxChild;
+			}
+			else {
+				break;
+			}
+		}
+	}
+	// shift down each element
+	int heapSize = size;
+	for (int step = 1; step < size; ++step) {
+		if (data[heapSize - 1] <= data[0]) {
+			std::swap(data[heapSize - 1], data[0]);
+		}
+		--heapSize;
+		int position = 0;
+		int posMaxChild;
+		while ((posMaxChild = 2 * position + 1) < heapSize) {// Пока есть левый потомок
+			if (posMaxChild + 1 < heapSize) { // Есть ещё кто-то и справа
+				if (data[posMaxChild] <= data[posMaxChild + 1]) {
+					++posMaxChild;
+				}
+			}
+			if (data[position] <= data[posMaxChild]) {
+				std::swap(data[position], data[posMaxChild]);
+				position = posMaxChild;
+			}
+			else {
+				break;
+			}
+		}
+	}
+}
+
+void DataBase::print()
+{
+	this->sortingData();
+	for (int i = 0; i < size; ++i)
+	{
+		std::cout << data[i].getID() << ", ";
+	}
 }
