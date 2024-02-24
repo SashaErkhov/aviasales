@@ -42,3 +42,11 @@ void Arry::setElement(unsigned long long int pos, unsigned char value)
 {
 	m_bytes[pos] = value;
 }
+
+void Arry::addPhraze(const char* phraze, unsigned int size)
+{
+	for (int i = 0; i < size; ++i)
+	{
+		this->addElement((unsigned char)phraze[i]);
+	}
+}
