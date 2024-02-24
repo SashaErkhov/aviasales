@@ -11,7 +11,7 @@ Arry::Arry(unsigned long long int size)
 	{
 		m_bytes = nullptr;
 	}*/
-	m_bytes = new unsigned char[size];
+	m_bytes = new char[size];
 	this->size = size;
 }
 
@@ -21,12 +21,12 @@ Arry::~Arry()
 	size = 0;
 }
 
-unsigned char Arry::getElement(unsigned long long int pos)
+char Arry::getElement(unsigned long long int pos)
 {
 	return m_bytes[pos];
 }
 
-void Arry::addElement(unsigned char elem)
+void Arry::addElement(const char elem)
 {
 	Arry tmp(size + 1);
 	for (int i = 0; i < size; ++i)
@@ -38,7 +38,7 @@ void Arry::addElement(unsigned char elem)
 	++size;
 }
 
-void Arry::setElement(unsigned long long int pos, unsigned char value)
+void Arry::setElement(unsigned long long int pos, const char value)
 {
 	m_bytes[pos] = value;
 }
