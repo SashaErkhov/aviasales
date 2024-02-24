@@ -1,5 +1,6 @@
 #include <iostream>
 #include "DataTime.h"
+#include "Array.h"
 
 int main()
 {
@@ -44,29 +45,19 @@ int main()
 	{
 		std::cout << error << std::endl;
 	}*/
-	std::cout << "test = 24.01.2034 12:01" << std::endl;
+	std::cout << "test = 44.1.2034 12:01" << std::endl;
 	try
 	{
-		DataTime x("24.01.2034 12:01", 16);
+		DataTime x("44.1.2034 12:01", 16);
 		std::cout << "real = " << x << std::endl;
 	}
 	catch (const char* error)
 	{
 		std::cout << error << std::endl;
 	}
-	catch (unsigned char* error)
+	catch (unsigned char day)
 	{
-		for (int i = 0; i < 100; ++i)
-		{
-			if (error[i] != '\0')
-			{
-				std::cout << error[i];
-			}
-			else
-			{
-				break;
-			}
-		}
+		std::cout << "Day value is invalid: " << (int)day << std::endl;
 	}
 	/*std::cout << "test = 01.13.2034 12:01" << std::endl;
 	try

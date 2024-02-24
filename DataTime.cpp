@@ -10,7 +10,7 @@ const char* fooError(const char* phraze,unsigned short size, const Arry& data)
 	{
 		error.addElement(data.m_bytes[i]);
 	}
-	error.addElement('\0');
+	//error.addElement('\0');
 	return (const char*)error.m_bytes;
 }
 
@@ -70,7 +70,8 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	day = std::atoi((const char*)dayStr.m_bytes);
 	if ((day < 1) or (day > 31))
 	{
-		throw fooError("Day value is invalid: ",22, dayStr);
+		//throw fooError("Day value is invalid: ",22, dayStr);
+		throw day;
 	}
 	Arry monthStr;
 	for (int i = (dayStr.size + 1); i < data.size; ++i)

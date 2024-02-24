@@ -7,7 +7,7 @@
 int main()
 {
 	unsigned char* str = new unsigned char[1000];
-	
+	DataBase DB;
 	do
 	{
 		std::cout << "> ";
