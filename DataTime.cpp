@@ -11,7 +11,7 @@ const char* fooError(const char* phraze,unsigned short size, const Arry& data)
 		error.addElement(data.m_bytes[i]);
 	}
 	error.addElement('\0');
-	return error.m_bytes;
+	return (const char*)error.m_bytes;
 }
 
 DataTime::DataTime(const char* input,unsigned int size)//может бросать исключения
@@ -22,7 +22,7 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	{
 		if (input[i] != ' ')
 		{
-			data.addElement(input[i]);
+			data.addElement((unsigned char)input[i]);
 		}
 		else
 		{
@@ -37,7 +37,7 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	Arry time;
 	for (int i = (data.size+1); i < size; ++i)
 	{
-		time.addElement(input[i]);
+		time.addElement((unsigned char)input[i]);
 	}
 	short cnt = 0;
 	for (int i = 0; i < data.size; ++i)
@@ -67,7 +67,7 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 			break;
 		}
 	}
-	day = std::atoi(dayStr.m_bytes);
+	day = std::atoi((const char*)dayStr.m_bytes);
 	if ((day < 1) or (day > 31))
 	{
 		throw fooError("Day value is invalid: ",22, dayStr);
@@ -84,7 +84,7 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 			break;
 		}
 	}
-	month = std::atoi(monthStr.m_bytes);
+	month = std::atoi((const char*)monthStr.m_bytes);
 	if ((month < 1) or (month > 12))
 	{
 		throw fooError("Month value is invalid: ",24, monthStr);
@@ -94,7 +94,7 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	{
 		yearStr.addElement(data.m_bytes[i]);
 	}
-	year = std::atoi(yearStr.m_bytes);
+	year = std::atoi((const char*)yearStr.m_bytes);
 	if (month == 2 and day == 29)
 	{
 		if (year % 100 == 0)
@@ -149,8 +149,8 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	{
 		minutesStr.addElement(time.m_bytes[i]);
 	}
-	hours = std::atoi(hoursStr.m_bytes);
-	minutes = std::atoi(minutesStr.m_bytes);
+	hours = std::atoi((const char*)hoursStr.m_bytes);
+	minutes = std::atoi((const char*)minutesStr.m_bytes);
 	if (hours < 0 or hours>24 or minutes < 0 or minutes>60)
 	{
 		throw fooError("Time value is invalid: ",23, time);
