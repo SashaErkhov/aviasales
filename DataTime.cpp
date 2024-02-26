@@ -233,3 +233,12 @@ bool DataTime::operator<(const DataTime& right)
 	if (this->minutes < right.minutes) { return true; }
 	return false;
 }
+
+DataTime::DataTime(unsigned char day, unsigned char month, unsigned char year, unsigned char hours, unsigned char minutes)
+{
+	this->day = day;
+	this->month = month;
+	this->year = year;
+	this->hours = hours;
+	this->minutes = minutes;
+}

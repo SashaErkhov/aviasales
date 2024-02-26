@@ -68,7 +68,7 @@ int main()
 		std::cout << "x[" << i << "] \"" << x.m_bytes[i] << "\" int = " << (int)x.m_bytes[i] << std::endl;
 	}*/
 
-
+	std::cout << sizeof(unsigned int) << std::endl;
 
 	std::system("pause");
 	return 0;

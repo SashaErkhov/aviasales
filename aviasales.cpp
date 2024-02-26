@@ -33,19 +33,42 @@ int main()
 		else if (command.m_bytes[0] == 'l' and command.m_bytes[1] == 'o' and 
 			command.m_bytes[2] == 'a' and command.m_bytes[3] == 'd' and command.size==4)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			try
+			{
+				IDnow = DB.load(str, 1000);
+			}
+			catch (const char* error)
+			{
+				std::cout << error;
+			}
 		}
 		else if (command.m_bytes[0] == 's' and command.m_bytes[1] == 'a' and
 			command.m_bytes[2] == 'v' and command.m_bytes[3] == 'e' and command.size == 4)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			try
+			{
+				DB.save(str, 1000);
+			}
+			catch (const char* error)
+			{
+				std::cout << error;
+			}
 		}
 		else if (command.m_bytes[0] == 'a' and command.m_bytes[1] == 'd' and
 			command.m_bytes[2] == 'd' and command.size == 3)
 		{
-			DB.addElement(AviaTickets(str,1000,++IDnow));
+			try 
+			{
+				DB.addElement(AviaTickets(str, 1000, ++IDnow));
+			}
+			catch (const char* error)
+			{
+				std::cout << error << std::endl;
+			}
+			catch (unsigned char day)
+			{
+				std::cout << "Day value is invalid: " << (int)day << std::endl;
+			}
 		}
 		else if (command.m_bytes[0] == 'd' and command.m_bytes[1] == 'e' and
 			command.m_bytes[2] == 'l' and command.m_bytes[3] == 'e' and 
@@ -76,8 +99,7 @@ int main()
 			command.m_bytes[2] == 'i' and command.m_bytes[3] == 'n' and
 			command.m_bytes[4] == 't' and command.size == 5)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			DB.print();
 		}
 		else if (command.m_bytes[0] == 's' and command.m_bytes[1] == 'c' and
 			command.m_bytes[2] == 'h' and command.m_bytes[3] == 'e' and

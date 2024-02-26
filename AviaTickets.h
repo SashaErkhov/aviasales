@@ -4,12 +4,15 @@
 
 #include "DataTime.h"
 
+class AviaTickets;
+std::ostream& operator<<(std::ostream& out, const AviaTickets& x);
+
 class AviaTickets
 {
 private:
-	char nomberOfFlight[7];
-	char airportFrom[3];
-	char airportTo[3];
+	char nomberOfFlight[8];
+	char airportFrom[4];
+	char airportTo[4];
 	DataTime DTFrom;
 	DataTime DTTo;
 	unsigned long long int cntTickets;
@@ -24,14 +27,20 @@ public:
 	bool operator<(const AviaTickets& right)const;
 	bool operator<=(const AviaTickets& right)const;
 	unsigned int getID()const { return ID; }
+	const char* getNomFli()const { return nomberOfFlight; }
+	const char* getAirFrom()const { return airportFrom; }
+	const char* getAirTo()const { return airportTo; }
+	DataTime getDataFrom()const { return DTFrom; }
+	DataTime getDataTo()const { return DTTo; }
 	unsigned long long int getCntTickets()const { return cntTickets; }
+	long double getPrice()const { return priceTickets; }
 };
 
 class DataBase
 {
 private:
 	AviaTickets* data;
-	unsigned short size;
+	unsigned long long int size;
 public:
 	DataBase(unsigned long long int size=0);
 	~DataBase();
@@ -43,6 +52,8 @@ public:
 	void sortingData();
 	void sortingPrice();
 	void print();
+	unsigned int load(unsigned char* str, unsigned int strSize);
+	void save(unsigned char* str, unsigned int strSize) const;
 };
 
 #endif // !AVIASALES_CLASS_PVM_2023

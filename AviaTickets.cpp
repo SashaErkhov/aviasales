@@ -1,16 +1,18 @@
 #include "AviaTickets.h"
 #include "DataTime.h"
 #include "Array.h"
+#include <iostream>
+#include <fstream>
 
 AviaTickets::AviaTickets(char* nomberOfFlight, char* airportFrom, char* airportTo,
 	const DataTime& DTFrom, const DataTime& DTTo, unsigned long long int cntTickets,
 	long double priceTickets,unsigned int ID)
 {
-	for (int i = 0; i < 7; ++i)
+	for(int i=0;i<8;++i)
 	{
 		this->nomberOfFlight[i] = nomberOfFlight[i];
 	}
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 4; ++i)
 	{
 		this->airportFrom[i] = airportFrom[i];
 		this->airportTo[i] = airportTo[i];
@@ -44,11 +46,14 @@ AviaTickets::AviaTickets()
 	{
 		nomberOfFlight[i] = 'A';
 	}
+	nomberOfFlight[7] = '\0';
 	for (int i = 0; i < 3; ++i)
 	{
 		airportFrom[i] = 'A';
 		airportTo[i] = 'A';
 	}
+	airportFrom[3] = '\0';
+	airportTo[3] = '\0';
 	DTFrom = DataTime();
 	DTTo= DataTime();
 	cntTickets=0;
@@ -69,6 +74,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 	{
 		throw "Unknown command";
 	}
+	newNomFli.addElement('\0');
 	for (int i = 0; i < newNomFli.size; ++i)
 	{
 		nomberOfFlight[i] = (char)newNomFli.m_bytes[i];
@@ -76,6 +82,14 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 		{
 			throw "Unknown command";
 		}
+		if ('A' <= nomberOfFlight[i] <= 'Z')
+		{
+			nomberOfFlight[i] += 20;
+		}
+	}
+	for (int i = newNomFli.size+1; i < 8; ++i)
+	{
+		nomberOfFlight[i] = '\0';
 	}
 	unsigned int index = 4 + newNomFli.size + 2;
 	Arry airFrom;
@@ -83,6 +97,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 	{
 		throw "Unknown command";
 	}
+	airFrom.addElement('\0');
 	for (int i = 0; i < airFrom.size; ++i)
 	{
 		airportFrom[i] = (char)airFrom.m_bytes[i];
@@ -90,6 +105,14 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 		{
 			throw "Unknown command";
 		}
+		if ('A' <= airportFrom[i] <= 'Z')
+		{
+			airportFrom[i] += 20;
+		}
+	}
+	for (int i = airFrom.size + 1; i < 4; ++i)
+	{
+		airportFrom[i] = '\0';
 	}
 	index += airFrom.size + 2;
 	Arry airTo;
@@ -97,6 +120,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 	{
 		throw "Unknown command";
 	}
+	airTo.addElement('\0');
 	for (int i = 0; i < airTo.size; ++i)
 	{
 		airportTo[i] = (char)airTo.m_bytes[i];
@@ -104,6 +128,14 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 		{
 			throw "Unknown command";
 		}
+		if ('A' <= airportTo[i] <= 'Z')
+		{
+			airportTo[i] += 20;
+		}
+	}
+	for (int i = airTo.size + 1; i < 4; ++i)
+	{
+		airportTo[i] = '\0';
 	}
 	Arry dtFrom;
 	index += airTo.size + 2;
@@ -119,8 +151,8 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 	}
 	try
 	{
-		DataTime tmpFrom((char*)dtFrom.m_bytes, dtFrom.size);
-		DataTime tmpTo((char*)dtTo.m_bytes, dtTo.size);
+		this->DTFrom = DataTime((char*)dtFrom.m_bytes, dtFrom.size);
+		this->DTTo = DataTime((char*)dtTo.m_bytes, dtTo.size);
 	}
 	catch (const char* error)
 	{
@@ -130,8 +162,6 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 	{
 		throw day;
 	}
-	this->DTFrom = DataTime((char*)dtFrom.m_bytes,dtFrom.size);
-	this->DTTo = DataTime((char*)dtTo.m_bytes, dtTo.size);
 	index += dtTo.size + 2;
 	Arry cnt;
 	if (!fooKons(cnt, str, index, strSize))
@@ -345,6 +375,141 @@ void DataBase::print()
 	this->sortingData();
 	for (int i = 0; i < size; ++i)
 	{
-		std::cout << data[i].getID() << ", ";
+		std::cout << data[i].getID() << ", " << data[i].getNomFli() << ", " << data[i].getAirFrom();
+		std::cout<< ", " << data[i].getAirTo() << ", " << data[i].getDataFrom()<<", "<<data[i].getDataTo();
+		std::cout << ", " << data[i].getCntTickets() << ", " << data[i].getPrice() << std::endl;
 	}
+}
+
+std::ostream& operator<<(std::ostream& out, const AviaTickets& x)
+{
+	out << x.getID() << ", " << x.getNomFli() << ", " << x.getAirFrom();
+	out << ", " << x.getAirTo() << ", " << x.getDataFrom() << ", " << x.getDataTo();
+	out << ", " << x.getCntTickets() << ", " << x.getPrice();
+	return out;
+}
+
+unsigned int DataBase::load(unsigned char* str, unsigned int strSize)
+{
+	Arry fileName;
+	for (int i = 5; i < strSize; ++i)
+	{
+		if (str[i] != '\0')
+		{
+			fileName.addElement(str[i]);
+		}
+		else
+		{
+			fileName.addElement('\0');
+			break;
+		}
+	}
+	std::ifstream file;
+	file.open((char*)fileName.m_bytes, std::ios_base::binary);
+	if (!file.is_open())
+	{
+		throw "Can not open database";
+	}
+	unsigned long long int fileSize=0;
+	file.read((char*)fileSize, 8);
+	char fileNomFli[8];
+	char fileAirFrom[4];
+	char fileAirTo[4];
+
+	short day = 0;
+	short month = 0;
+	short year = 0;
+	short hours = 0;
+	short minutes = 0;
+
+	short day2 = 0;
+	short month2 = 0;
+	short year2 = 0;
+	short hours2 = 0;
+	short minutes2 = 0;
+
+	unsigned long long int CntTickets=0;
+	long double price=0;
+	unsigned int newID=0;
+	unsigned int maxID = 0;
+	for (int i = 0; i < size; ++i)
+	{
+		file.read(fileNomFli, 8);
+		file.read(fileAirFrom, 4);
+		file.read(fileAirTo, 4);
+
+		file.read((char*)day, 2);
+		file.read((char*)month, 2);
+		file.read((char*)year, 2);
+		file.read((char*)hours, 2);
+		file.read((char*)minutes, 2);
+
+		file.read((char*)day2, 2);
+		file.read((char*)month2, 2);
+		file.read((char*)year2, 2);
+		file.read((char*)hours2, 2);
+		file.read((char*)minutes2, 2);
+
+		file.read((char*)CntTickets, 8);
+		file.read((char*)price, 16);
+		file.read((char*)newID, 4);
+
+		if (newID > maxID)
+		{
+			maxID = newID;
+		}
+
+		addElement(AviaTickets(fileNomFli, fileAirFrom, fileAirTo,
+			DataTime(day, month, year, hours, minutes),
+			DataTime(day2, month2, year2, hours2, minutes2), CntTickets, price, newID));
+	}
+	file.close();
+	return maxID;
+}
+
+void DataBase::save(unsigned char* str, unsigned int strSize)const
+{
+	Arry fileName;
+	for (int i = 5; i < strSize; ++i)
+	{
+		if (str[i] != '\0')
+		{
+			fileName.addElement(str[i]);
+		}
+		else
+		{
+			fileName.addElement('\0');
+			break;
+		}
+	}
+	std::ofstream file;
+	file.open((char*)fileName.m_bytes, std::ios_base::binary);
+	if (!file.is_open())
+	{
+		throw "Can not write to file";
+	}
+	file.write((char*)size, 8);
+	for (int i = 0; i < size; ++i)
+	{
+		file.write(data[i].getNomFli(),8);
+		file.write(data[i].getAirFrom(), 4);
+		file.write(data[i].getAirTo(), 4);
+
+		file.write((char*)data[i].getDataFrom().getDay(), 2);
+		file.write((char*)data[i].getDataFrom().getMonth(), 2);
+		file.write((char*)data[i].getDataFrom().getYear(), 2);
+		file.write((char*)data[i].getDataFrom().getHours(), 2);
+		file.write((char*)data[i].getDataFrom().getMinutes(), 2);
+
+		file.write((char*)data[i].getDataTo().getDay(), 2);
+		file.write((char*)data[i].getDataTo().getMonth(), 2);
+		file.write((char*)data[i].getDataTo().getYear(), 2);
+		file.write((char*)data[i].getDataTo().getHours(), 2);
+		file.write((char*)data[i].getDataTo().getMinutes(), 2);
+
+		file.write((char*)data[i].getCntTickets(), 8);
+		file.write((char*)(data[i].getPrice()), 16);
+		file.write((char*)data[i].getID(), 4);
+	}
+	file.close();
 }

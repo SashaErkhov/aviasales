@@ -18,6 +18,7 @@ private:
 public:
 	DataTime(const char* input, unsigned int size);
 	DataTime();
+	DataTime(unsigned char day, unsigned char month, unsigned char year, unsigned char hours, unsigned char minutes);
 	short getDay() const { return day; }
 	short getMonth() const { return month; }
 	short getYear() const { return year; }
