@@ -36,6 +36,10 @@ bool fooKons(Arry& x, const unsigned char* str, unsigned int startIndex,unsigned
 		{
 			return true;
 		}
+		else
+		{
+			return false;
+		}
 	}
 	return false;
 }
@@ -65,10 +69,6 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 {
 	//add номер_рейса, аэропорт_вылета, аэропорт_прибытия, дата_и_время_вылета, дата_и_время_прилёта, количество_билетов, цена
 	//add CA-909, PKX, SVO, 19.02.2024 8:40, 19.02.2024 17:00, 5, 80499
-	if (strSize < 53)
-	{
-		throw "Unknown command";
-	}
 	Arry newNomFli;
 	if ( (!fooKons(newNomFli,str,4,strSize)) or newNomFli.size>7)
 	{

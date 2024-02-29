@@ -6,7 +6,7 @@
 
 int main()
 {
-	unsigned int strSize = 1000;
+	const unsigned int strSize = 1000;
 	unsigned char* str = new unsigned char[strSize];
 	DataBase DB;
 	unsigned int IDnow = 0;
