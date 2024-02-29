@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-c -pedantic-errors -g -std=c++17
+CFLAGS=-c -pedantic-errors -gdwarf-4 -std=c++17
 LDFLAGS=
 SOURCES=aviasales.cpp Array.cpp DataTime.cpp AviaTickets.cpp
 OBJECTS=$(SOURCES:.cpp=.o)

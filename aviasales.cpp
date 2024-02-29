@@ -6,15 +6,16 @@
 
 int main()
 {
-	unsigned char* str = new unsigned char[1000];
+	unsigned int strSize = 1000;
+	unsigned char* str = new unsigned char[strSize];
 	DataBase DB;
 	unsigned int IDnow = 0;
 	do
 	{
 		std::cout << "> ";
-		std::cin.getline((char*)(str), 1000);
+		std::cin.getline((char*)(str), strSize);
 		Arry command;
-		for (int i = 0; i < 1000; ++i)
+		for (int i = 0; i < strSize; ++i)
 		{
 			if (!(str[i] == ' ' or str[i] == 0))//отрабатывает случай если мы написали команду без аргументов
 			{
@@ -35,7 +36,7 @@ int main()
 		{
 			try
 			{
-				IDnow = DB.load(str, 1000);
+				IDnow = DB.load(str, strSize);
 			}
 			catch (const char* error)
 			{
@@ -47,7 +48,7 @@ int main()
 		{
 			try
 			{
-				DB.save(str, 1000);
+				DB.save(str, strSize);
 			}
 			catch (const char* error)
 			{
@@ -59,7 +60,7 @@ int main()
 		{
 			try 
 			{
-				DB.addElement(AviaTickets(str, 1000, ++IDnow));
+				DB.addElement(AviaTickets(str, strSize, ++IDnow));
 			}
 			catch (const char* error)
 			{
@@ -75,7 +76,7 @@ int main()
 			command.m_bytes[4] == 't' and command.m_bytes[5] == 'e' and command.size == 6)
 		{
 			Arry id;
-			for (int i = 7; i < 1000; ++i)
+			for (int i = 7; i < strSize; ++i)
 			{
 				if (str[i] != 0)
 				{
@@ -106,14 +107,12 @@ int main()
 			command.m_bytes[4] == 'd' and command.m_bytes[5] == 'u' and
 			command.m_bytes[6] == 'l' and command.m_bytes[7] == 'e' and command.size == 8)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			DB.schedule(str, strSize);
 		}
 		else if (command.m_bytes[0] == 'f' and command.m_bytes[1] == 'r' and
 			command.m_bytes[2] == 'o' and command.m_bytes[3] == 'm' and command.size == 4)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			DB.fromTo(str, strSize);
 		}
 		else if (command.m_bytes[0] == 'f' and command.m_bytes[1] == 'i' and
 			command.m_bytes[2] == 'n' and command.m_bytes[3] == 'd' and command.size == 4)

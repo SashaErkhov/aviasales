@@ -370,9 +370,59 @@ void DataBase::sortingPrice()
 	}
 }
 
+void DataBase::sortingNom()
+{
+	// make heap
+	for (int i = 8 / 2; i >= 0; --i) {
+		// shift down each element
+		int pos = i;
+		int posMaxChild;
+		while ((posMaxChild = 2 * pos + 1) < 8) {
+			if (posMaxChild + 1 < 8) {
+				if (data->getNomFli()[posMaxChild] < data->getNomFli()[posMaxChild + 1]) {
+					++posMaxChild;
+				}
+			}
+			if (data->getNomFli()[pos] < data->getNomFli()[posMaxChild]) {
+				std::swap(data[pos], data[posMaxChild]);
+				pos = posMaxChild;
+			}
+			else {
+				break;
+			}
+		}
+	}
+	// shift down each element
+	int heapSize = 8;
+	for (int step = 1; step < 8; ++step) {
+		if (data->getNomFli()[heapSize - 1] < data->getNomFli()[0]) {
+			std::swap(data[heapSize - 1], data[0]);
+		}
+		--heapSize;
+		int position = 0;
+		int posMaxChild;
+		while ((posMaxChild = 2 * position + 1) < heapSize) {// Пока есть левый потомок
+			if (posMaxChild + 1 < heapSize) { // Есть ещё кто-то и справа
+				if (data->getNomFli()[posMaxChild] < data->getNomFli()[posMaxChild + 1]) {
+					++posMaxChild;
+				}
+			}
+			if (data->getNomFli()[position] < data->getNomFli()[posMaxChild]) {
+				std::swap(data[position], data[posMaxChild]);
+				position = posMaxChild;
+			}
+			else {
+				break;
+			}
+		}
+	}
+}
+
 void DataBase::print()
 {
 	this->sortingData();
+	this->sortingNom();
+	this->sortingPrice();
 	for (int i = 0; i < size; ++i)
 	{
 		std::cout << data[i].getID() << ", " << data[i].getNomFli() << ", " << data[i].getAirFrom();
@@ -438,30 +488,43 @@ unsigned int DataBase::load(unsigned char* str, unsigned int strSize)
 		file.read(fileAirFrom, 4);
 		file.read(fileAirTo, 4);
 
-		file.read((char*)day, 2);
-		file.read((char*)month, 2);
-		file.read((char*)year, 2);
-		file.read((char*)hours, 2);
-		file.read((char*)minutes, 2);
+		file >> day;
+		file >> month;
+		file >> year;
+		file >> hours;
+		file >> minutes;
 
-		file.read((char*)day2, 2);
-		file.read((char*)month2, 2);
-		file.read((char*)year2, 2);
-		file.read((char*)hours2, 2);
-		file.read((char*)minutes2, 2);
+		file >> day2;
+		file >> month2;
+		file >> year2;
+		file >> hours2;
+		file >> minutes2;
 
-		file.read((char*)CntTickets, 8);
-		file.read((char*)price, 16);
-		file.read((char*)newID, 4);
+		file >> CntTickets;
+		file >> price;
+		file >> newID;
 
 		if (newID > maxID)
 		{
 			maxID = newID;
 		}
 
-		addElement(AviaTickets(fileNomFli, fileAirFrom, fileAirTo,
-			DataTime(day, month, year, hours, minutes),
-			DataTime(day2, month2, year2, hours2, minutes2), CntTickets, price, newID));
+		try
+		{
+			addElement(AviaTickets(fileNomFli, fileAirFrom, fileAirTo,
+				DataTime(day, month, year, hours, minutes),
+				DataTime(day2, month2, year2, hours2, minutes2), CntTickets, price, newID));
+		}
+		catch (const char* error)
+		{
+			std::cout << error << std::endl;
+			return maxID;
+		}
+		catch (unsigned char day)
+		{
+			std::cout << "Day value is invalid: " << (int)day << std::endl;
+			return maxID;
+		}
 	}
 	file.close();
 	return maxID;
@@ -495,21 +558,198 @@ void DataBase::save(unsigned char* str, unsigned int strSize)const
 		file.write(data[i].getAirFrom(), 4);
 		file.write(data[i].getAirTo(), 4);
 
-		file.write((char*)data[i].getDataFrom().getDay(), 2);
-		file.write((char*)data[i].getDataFrom().getMonth(), 2);
-		file.write((char*)data[i].getDataFrom().getYear(), 2);
-		file.write((char*)data[i].getDataFrom().getHours(), 2);
-		file.write((char*)data[i].getDataFrom().getMinutes(), 2);
+		file << ' ' << data[i].getDataFrom().getDay() << ' ';
+		file << data[i].getDataFrom().getMonth() << ' ';
+		file << data[i].getDataFrom().getYear() << ' ';
+		file << data[i].getDataFrom().getHours() << ' ';
+		file << data[i].getDataFrom().getMinutes() << ' ';
 
-		file.write((char*)data[i].getDataTo().getDay(), 2);
-		file.write((char*)data[i].getDataTo().getMonth(), 2);
-		file.write((char*)data[i].getDataTo().getYear(), 2);
-		file.write((char*)data[i].getDataTo().getHours(), 2);
-		file.write((char*)data[i].getDataTo().getMinutes(), 2);
+		file << data[i].getDataTo().getDay() << ' ';
+		file << data[i].getDataTo().getMonth() << ' ';
+		file << data[i].getDataTo().getYear() << ' ';
+		file << data[i].getDataTo().getHours() << ' ';
+		file << data[i].getDataTo().getMinutes() << ' ';
 
-		file.write((char*)data[i].getCntTickets(), 8);
-		file.write((char*)(data[i].getPrice()), 16);
-		file.write((char*)data[i].getID(), 4);
+		file << data[i].getCntTickets() << ' ';
+		file << data[i].getPrice() << ' ';
+		file << data[i].getID() << ' ';
+
 	}
 	file.close();
+}
+
+void DataBase::schedule(const unsigned char* str, unsigned int strSize)
+{
+	Arry airFrom;
+	for (int i = 9; i < strSize; ++i)
+	{
+		if (str[i] != ' ' and str[i] != 0)
+		{
+			airFrom.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (int i = airFrom.size; i < 4; ++i)
+	{
+		airFrom.addElement('\0');
+	}
+	Arry DTFrom;
+	for (int i = 9 + airFrom.size + 1; i < strSize; ++i)
+	{
+		if (str[i] != ' ' and str[i] != 0)
+		{
+			DTFrom.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	DataTime tmp;
+	try
+	{
+		tmp = DataTime((char*)DTFrom.m_bytes, DTFrom.size);
+	}
+	catch (const char* error)
+	{
+		std::cout << error << std::endl;
+		return;
+	}
+	catch (unsigned char day)
+	{
+		std::cout << "Day value is invalid: " << (int)day << std::endl;
+		return;
+	}
+	DataBase tmpDB;
+	for (int i = 0; i < size; ++i)
+	{
+		if (this->data[i].getDataFrom().getYear() == tmp.getYear() and
+			this->data[i].getDataFrom().getMonth() == tmp.getMonth() and
+			this->data[i].getDataFrom().getDay() == tmp.getDay())
+		{
+			bool ok=true;
+			for (int i = 0; i < 4; ++i)
+			{
+				if (this->data[i].getAirFrom()[i] != (char)airFrom.m_bytes[i])
+				{
+					ok = false;
+				}
+			}
+			if (ok)
+			{
+				tmpDB.addElement(this->data[i]);
+			}
+		}
+	}
+	tmpDB.sortingData();
+	for (int i = 0; i < tmpDB.size; ++i)
+	{
+		std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirFrom() << ", "
+			<< tmpDB.data[i].getAirTo() << std::endl;
+	}
+}
+
+void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
+{
+	Arry airFrom;
+	unsigned int index = 5;
+	for (int i = index; i < strSize; ++i)
+	{
+		if (str[i] != ',' and str[i] != 0)
+		{
+			airFrom.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	Arry airTo;
+	index += airFrom.size + 4;
+	for (int i = index; i < strSize; ++i)
+	{
+		if (str[i] != ',' and str[i] != 0)
+		{
+			airTo.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	Arry DTFrom;
+	index += airTo.size + 4;
+	for (int i = index; i < strSize; ++i)
+	{
+		if (str[i] != ',' and str[i] != 0)
+		{
+			DTFrom.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	DataTime tmp;
+	try 
+	{
+		tmp=DataTime((char*)DTFrom.m_bytes, DTFrom.size);
+	}
+	catch (const char* error)
+	{
+		std::cout << error << std::endl;
+		return;
+	}
+	catch (unsigned char day)
+	{
+		std::cout << "Day value is invalid: " << (int)day << std::endl;
+		return;
+	}
+	DataBase tmpDB;
+	for (int i = 0; i < size; ++i)
+	{
+		if (this->data[i].getDataFrom().getYear() == tmp.getYear() and
+			this->data[i].getDataFrom().getMonth() == tmp.getMonth() and
+			this->data[i].getDataFrom().getDay() == tmp.getDay())
+		{
+			bool ok = true;
+			for (int i = 0; i < 4; ++i)
+			{
+				if (this->data[i].getAirFrom()[i] != (char)airFrom.m_bytes[i])
+				{
+					ok = false;
+				}
+				if (this->data[i].getAirTo()[i] != (char)airTo.m_bytes[i])
+				{
+					ok = false;
+				}
+			}
+			if (ok)
+			{
+				tmpDB.addElement(this->data[i]);
+			}
+		}
+	}
+	tmpDB.sortingPrice();
+	tmpDB.clearDB();
+	for (int i = 0; i < tmpDB.size; ++i)
+	{
+		std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirFrom() << ", " <<
+			tmpDB.data[i].getAirTo() << ", " << tmpDB.data[i].getDataFrom() << ", " <<
+			tmpDB.data[i].getDataTo() << ", " << tmpDB.data[i].getCntTickets() << ", " <<
+			tmpDB.data[i].getPrice() << std::endl;
+	}
+}
+
+void DataBase::find(const unsigned char* str, unsigned int strSize)
+{
+	//todo:
+}
+
+void DataBase::buy(const unsigned char* str, unsigned int strSize)
+{
+	//todo:
 }

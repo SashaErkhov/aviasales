@@ -20,7 +20,7 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	bool ok=false;
 	for (int i = 0; i < size; ++i)
 	{
-		if (input[i] != ' ')
+		if (input[i] != ' ' and input[i]!=0)
 		{
 			data.addElement((unsigned char)input[i]);
 		}
@@ -38,6 +38,12 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	for (int i = (data.size+1); i < size; ++i)
 	{
 		time.addElement((unsigned char)input[i]);
+	}
+	if (time.size == 0)
+	{
+		hours = 0;
+		minutes = 0;
+		return;
 	}
 	short cnt = 0;
 	for (int i = 0; i < data.size; ++i)

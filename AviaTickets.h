@@ -51,9 +51,14 @@ public:
 	void clearDB();
 	void sortingData();
 	void sortingPrice();
+	void sortingNom();
 	void print();
+	void schedule(const unsigned char* str, unsigned int strSize);
 	unsigned int load(unsigned char* str, unsigned int strSize);
 	void save(unsigned char* str, unsigned int strSize) const;
+	void fromTo(const unsigned char* str, unsigned int strSize);
+	void find(const unsigned char* str, unsigned int strSize);
+	void buy(const unsigned char* str, unsigned int strSize);
 };
 
 #endif // !AVIASALES_CLASS_PVM_2023
