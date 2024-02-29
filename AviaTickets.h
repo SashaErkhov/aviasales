@@ -24,8 +24,10 @@ public:
 		long double priceTickets,unsigned int ID);
 	AviaTickets(const unsigned char* str, unsigned int strSize,unsigned int ID);
 	AviaTickets();
+	AviaTickets(const AviaTickets& X);
 	bool operator<(const AviaTickets& right)const;
 	bool operator<=(const AviaTickets& right)const;
+	AviaTickets& operator=(const AviaTickets& X);
 	unsigned int getID()const { return ID; }
 	const char* getNomFli()const { return nomberOfFlight; }
 	const char* getAirFrom()const { return airportFrom; }

@@ -183,6 +183,43 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize,unsigned
 	}
 }
 
+AviaTickets::AviaTickets(const AviaTickets& X)
+{
+	for (int i = 0; i < 8; ++i)
+	{
+		this->nomberOfFlight[i] = X.nomberOfFlight[i];
+	}
+	for (int i = 0; i < 4; ++i)
+	{
+		this->airportFrom[i] = X.airportFrom[i];
+		this->airportTo[i] = X.airportTo[i];
+	}
+	DTFrom = X.DTFrom;
+	DTTo = X.DTTo;
+	cntTickets = X.cntTickets;
+	priceTickets = X.priceTickets;
+	ID = X.ID;
+}
+
+AviaTickets& AviaTickets::operator=(const AviaTickets& X)
+{
+	for (int i = 0; i < 8; ++i)
+	{
+		this->nomberOfFlight[i] = X.nomberOfFlight[i];
+	}
+	for (int i = 0; i < 4; ++i)
+	{
+		this->airportFrom[i] = X.airportFrom[i];
+		this->airportTo[i] = X.airportTo[i];
+	}
+	DTFrom = X.DTFrom;
+	DTTo = X.DTTo;
+	cntTickets = X.cntTickets;
+	priceTickets = X.priceTickets;
+	ID = X.ID;
+	return *this;
+}
+
 bool AviaTickets::operator<(const AviaTickets& right)const
 {
 	if (this->DTFrom.getYear() < right.DTFrom.getYear()) { return true; }
@@ -204,6 +241,14 @@ bool AviaTickets::operator<=(const AviaTickets& right)const
 		return (*this) < right;
 	}
 	return false;
+}
+
+std::ostream& operator<<(std::ostream& out, const AviaTickets& x)
+{
+	out << x.getID() << ", " << x.getNomFli() << ", " << x.getAirFrom();
+	out << ", " << x.getAirTo() << ", " << x.getDataFrom() << ", " << x.getDataTo();
+	out << ", " << x.getCntTickets() << ", " << x.getPrice();
+	return out;
 }
 
 DataBase::DataBase(unsigned long long int size)
@@ -429,14 +474,6 @@ void DataBase::print()
 		std::cout<< ", " << data[i].getAirTo() << ", " << data[i].getDataFrom()<<", "<<data[i].getDataTo();
 		std::cout << ", " << data[i].getCntTickets() << ", " << data[i].getPrice() << std::endl;
 	}
-}
-
-std::ostream& operator<<(std::ostream& out, const AviaTickets& x)
-{
-	out << x.getID() << ", " << x.getNomFli() << ", " << x.getAirFrom();
-	out << ", " << x.getAirTo() << ", " << x.getDataFrom() << ", " << x.getDataTo();
-	out << ", " << x.getCntTickets() << ", " << x.getPrice();
-	return out;
 }
 
 unsigned int DataBase::load(unsigned char* str, unsigned int strSize)
@@ -747,7 +784,89 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 //todo:...
 void DataBase::find(const unsigned char* str, unsigned int strSize)
 {
-	//todo:
+	Arry airFrom;
+	for (int i = 5; i < strSize; ++i)
+	{
+		if (str[i] != ' ' and str[i] != 0)
+		{
+			airFrom.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	Arry airTo;
+	for (int i = 5 + airFrom.size + 4; i < strSize; ++i)
+	{
+		if (str[i] != ' ' and str[i] != 0)
+		{
+			airTo.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (int i = airFrom.size; i < 4; ++i)
+	{
+		airFrom.addElement('\0');
+	}
+	for (int i = airTo.size; i < 4; ++i)
+	{
+		airTo.addElement('\0');
+	}
+	this->clearDB();
+	DataBase tmp;
+	for (int i = 0; i < size; ++i)
+	{
+		if ((char)airFrom.m_bytes[0] == this->data[i].getAirFrom()[0] and
+			(char)airFrom.m_bytes[1] == this->data[i].getAirFrom()[1] and
+			(char)airFrom.m_bytes[2] == this->data[i].getAirFrom()[2] and
+			(char)airFrom.m_bytes[3] == this->data[i].getAirFrom()[3] and
+			(char)airTo.m_bytes[0] == this->data[i].getAirTo()[0] and
+			(char)airTo.m_bytes[1] == this->data[i].getAirTo()[1] and
+			(char)airTo.m_bytes[2] == this->data[i].getAirTo()[2] and
+			(char)airTo.m_bytes[3] == this->data[i].getAirTo()[3])
+		{
+			tmp.addElement(this->data[i]);
+		}
+	}
+	tmp.sortingPrice();
+	this->sortingPrice();
+	for (int i = 0; i < size; ++i)
+	{
+		if ((char)airFrom.m_bytes[0] == this->data[i].getAirFrom()[0] and
+			(char)airFrom.m_bytes[1] == this->data[i].getAirFrom()[1] and
+			(char)airFrom.m_bytes[2] == this->data[i].getAirFrom()[2] and
+			(char)airFrom.m_bytes[3] == this->data[i].getAirFrom()[3])
+		{
+			for (int j = 0; j < size; ++j)
+			{
+				if ((char)airTo.m_bytes[0] == this->data[j].getAirTo()[0] and
+					(char)airTo.m_bytes[1] == this->data[j].getAirTo()[1] and
+					(char)airTo.m_bytes[2] == this->data[j].getAirTo()[2] and
+					(char)airTo.m_bytes[3] == this->data[j].getAirTo()[3])
+				{
+					if (this->data[i].getAirTo()[0] == this->data[j].getAirFrom()[0] and
+						this->data[i].getAirTo()[1] == this->data[j].getAirFrom()[1] and
+						this->data[i].getAirTo()[2] == this->data[j].getAirFrom()[2] and
+						this->data[i].getAirTo()[3] == this->data[j].getAirFrom()[3])
+					{
+						if (tmp.data[0].getPrice() > (data[i].getPrice() + data[j].getPrice()))
+						{
+							//todo:...
+						}
+						else
+						{
+							//todo:...
+						}
+					}
+				}
+			}
+		}
+	}
+	//todo:...
 }
 
 void DataBase::buy(const unsigned char* str, unsigned int strSize)
@@ -819,7 +938,6 @@ void DataBase::buy(const unsigned char* str, unsigned int strSize)
 	}
 }
 
-//todo:...
 void DataBase::exportDB(const unsigned char* str, unsigned int strSize)
 {
 	Arry fileName;
@@ -845,6 +963,9 @@ void DataBase::exportDB(const unsigned char* str, unsigned int strSize)
 	this->sortingPrice();
 	for (int i = 0; i < size; ++i)
 	{
-		//todo:...
+		file << this->data[i].getNomFli() << ", " << this->data[i].getAirFrom() << ", " <<
+			this->data[i].getAirTo() << ", " << this->data[i].getDataFrom() << ", " <<
+			this->data[i].getDataTo() << ", " << this->data[i].getCntTickets() << ", " <<
+			this->data[i].getPrice()<<std::endl;
 	}
 }
