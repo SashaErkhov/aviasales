@@ -744,6 +744,7 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 	}
 }
 
+//todo:...
 void DataBase::find(const unsigned char* str, unsigned int strSize)
 {
 	//todo:
@@ -751,5 +752,99 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 
 void DataBase::buy(const unsigned char* str, unsigned int strSize)
 {
-	//todo:
+	Arry NomFli;
+	for (int i = 4; i < strSize; ++i)
+	{
+		if (str[i] != ' ' and str[i] != 0)
+		{
+			NomFli.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	for (int i = NomFli.size; i < 8; ++i)
+	{
+		NomFli.addElement('\0');
+	}
+	Arry DTFrom;
+	for (int i = 4 + NomFli.size + 1; i < strSize; ++i)
+	{
+		if (str[i] != ' ' and str[i] != 0)
+		{
+			DTFrom.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	DataTime tmp;
+	try
+	{
+		tmp = DataTime((char*)DTFrom.m_bytes, DTFrom.size);
+	}
+	catch (const char* error)
+	{
+		std::cout << error << std::endl;
+		return;
+	}
+	catch (unsigned char day)
+	{
+		std::cout << "Day value is invalid: " << (int)day << std::endl;
+		return;
+	}
+	this->sortingPrice();
+	for (int i = 0; i < size; ++i)
+	{
+		if (this->data[i].getDataFrom().getYear() == tmp.getYear() and
+			this->data[i].getDataFrom().getMonth() == tmp.getMonth() and
+			this->data[i].getDataFrom().getDay() == tmp.getDay())
+		{
+			bool ok = true;
+			for (int i = 0; i < 8; ++i)
+			{
+				if (this->data[i].getNomFli()[i] != (char)NomFli.m_bytes[i])
+				{
+					ok = false;
+				}
+			}
+			if (ok)
+			{
+				this->data[i].setCntTickets(this->data[i].getCntTickets() - 1);
+				break;
+			}
+		}
+	}
+}
+
+//todo:...
+void DataBase::exportDB(const unsigned char* str, unsigned int strSize)
+{
+	Arry fileName;
+	for (int i = 7; i < strSize; ++i)
+	{
+		if (str[i] != 0)
+		{
+			fileName.addElement(str[i]);
+		}
+		else
+		{
+			break;
+		}
+	}
+	std::fstream file;
+	file.open((char*)fileName.m_bytes, std::ios_base::binary | std::ios_base::out);
+	if (!file.is_open())
+	{
+		throw "Can not write to file";
+	}
+	this->sortingData();
+	this->sortingNom();
+	this->sortingPrice();
+	for (int i = 0; i < size; ++i)
+	{
+		//todo:...
+	}
 }

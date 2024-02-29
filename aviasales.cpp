@@ -123,15 +123,20 @@ int main()
 		else if (command.m_bytes[0] == 'b' and command.m_bytes[1] == 'u' and
 			command.m_bytes[2] == 'y' and command.size == 3)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			DB.buy(str, strSize);
 		}
 		else if (command.m_bytes[0] == 'e' and command.m_bytes[1] == 'x' and
 			command.m_bytes[2] == 'p' and command.m_bytes[3] == 'o' and
 			command.m_bytes[4] == 'r' and command.m_bytes[5] == 't' and command.size == 6)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			try
+			{
+				DB.exportDB(str, strSize);
+			}
+			catch (const char* error)
+			{
+				std::cout << error;
+			}
 		}
 		else if(command.size!=0)
 		{

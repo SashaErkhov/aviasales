@@ -34,6 +34,7 @@ public:
 	DataTime getDataTo()const { return DTTo; }
 	unsigned long long int getCntTickets()const { return cntTickets; }
 	long double getPrice()const { return priceTickets; }
+	void setCntTickets(unsigned long long int x) { cntTickets = x; }
 };
 
 class DataBase
@@ -59,6 +60,7 @@ public:
 	void fromTo(const unsigned char* str, unsigned int strSize);
 	void find(const unsigned char* str, unsigned int strSize);
 	void buy(const unsigned char* str, unsigned int strSize);
+	void exportDB(const unsigned char* str, unsigned int strSize);
 };
 
 #endif // !AVIASALES_CLASS_PVM_2023
