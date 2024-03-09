@@ -151,6 +151,19 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	{
 		throw "Unknown command";
 	}
+
+	/*for (int i = index; i < strSize; ++i)
+	{
+		if (str[i] != ',' and str[i] != 0)
+		{
+			dtTo.addElement(str[i]);
+		}
+		else if ((str[i] == ',') or (str[i] == 0))
+		{
+			return true;
+		}
+	}*/
+
 	try
 	{
 		this->DTFrom = DataTime((char*)dtFrom.m_bytes, dtFrom.size);
@@ -165,6 +178,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 		throw day;
 	}
 	index += dtTo.size + 1;
+	if (str[index] == ' ') { ++index; }
 	Arry cnt;
 	if (!fooKons(cnt, str, index, strSize))
 	{
@@ -551,12 +565,13 @@ void DataBase::sortingNom()
 
 void DataBase::print()
 {
-	this->sortingDNP();
+	DataBase tmp(*this);
+	tmp.sortingDNP();
 	for (int i = 0; i < size; ++i)
 	{
-		std::cout << data[i].getID() << ", " << data[i].getNomFli() << ", " << data[i].getAirFrom();
-		std::cout << ", " << data[i].getAirTo() << ", " << data[i].getDataFrom() << ", " << data[i].getDataTo();
-		std::cout << ", " << data[i].getCntTickets() << ", " << data[i].getPrice() << std::endl;
+		std::cout << tmp.data[i].getID() << ", " << tmp.data[i].getNomFli() << ", " << tmp.data[i].getAirFrom();
+		std::cout << ", " << tmp.data[i].getAirTo() << ", " << tmp.data[i].getDataFrom() << ", " << tmp.data[i].getDataTo();
+		std::cout << ", " << tmp.data[i].getCntTickets() << ", " << tmp.data[i].getPrice() << std::endl;
 	}
 }
 
@@ -738,7 +753,7 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 		airFrom.addElement('\0');
 	}
 	Arry DTFrom;
-	for (int i = 9 + airFrom.size + 1; i < strSize; ++i)
+	for (int i = 9 + airFrom.size; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -749,6 +764,7 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 			break;
 		}
 	}
+	DTFrom.addElement('\0');
 	DataTime tmp;
 	try
 	{
@@ -788,8 +804,8 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 	tmpDB.sortingData();
 	for (int i = 0; i < tmpDB.size; ++i)
 	{
-		std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirFrom() << ", "
-			<< tmpDB.data[i].getAirTo() << std::endl;
+		std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirTo() << ", "
+			<< tmpDB.data[i].getDataFrom().getHours()<<':'<< tmpDB.data[i].getDataFrom().getMinutes() << std::endl;
 	}
 }
 
