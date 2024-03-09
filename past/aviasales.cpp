@@ -117,8 +117,7 @@ int main()
 		else if (command.m_bytes[0] == 'f' and command.m_bytes[1] == 'i' and
 			command.m_bytes[2] == 'n' and command.m_bytes[3] == 'd' and command.size == 4)
 		{
-			//todo:
-			std::cout << "Hi" << std::endl;
+			DB.find(str, strSize);
 		}
 		else if (command.m_bytes[0] == 'b' and command.m_bytes[1] == 'u' and
 			command.m_bytes[2] == 'y' and command.size == 3)

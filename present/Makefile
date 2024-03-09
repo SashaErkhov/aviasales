@@ -1,0 +1,34 @@
+CC=g++
+CFLAGS=-c -pedantic-errors -gdwarf-4 -std=c++17
+LDFLAGS=
+SOURCES=aviasales.cpp Array.cpp DataTime.cpp AviaTickets.cpp
+OBJECTS=$(SOURCES:.cpp=.o)
+EXECUTABLE=aviasales.exe
+
+all: test $(SOURCES) $(EXECUTABLE)
+    
+$(EXECUTABLE): $(OBJECTS) 
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+test:
+	Project2 < ../../Project2/input1.txt
+	Project2 < ../../Project2/input2.txt
+	Project2 < ../../Project2/input3.txt
+	Project2 < ../../Project2/input4.txt
+	Project2 < ../../Project2/input5.txt
+	Project2 < ../../Project2/input6.txt
+	echo -------------------------
+	Project2 < ../../Project2/input7.txt
+
+testJust : test.o Array.o
+	$(CC) $(LDFLAGS) Array.o test.o -o $@
+	testJust
+
+testDT : testDataTime.o DataTime.o Array.o
+	$(CC) $(LDFLAGS) DataTime.o testDataTime.o Array.o -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+clean:
+	del $(OBJECTS) $(EXECUTABLE) test.o test.exe DataTime.o testDataTime.o Array.o testDT.exe testJust.exe

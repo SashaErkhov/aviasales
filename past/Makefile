@@ -10,8 +10,12 @@ all: $(SOURCES) $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
-test : test.o Array.o
+test: aviasales.exe
+	aviasales < input1.txt
+
+testJust : test.o Array.o
 	$(CC) $(LDFLAGS) Array.o test.o -o $@
+	testJust
 
 testDT : testDataTime.o DataTime.o Array.o
 	$(CC) $(LDFLAGS) DataTime.o testDataTime.o Array.o -o $@
@@ -20,4 +24,4 @@ testDT : testDataTime.o DataTime.o Array.o
 	$(CC) $(CFLAGS) $< -o $@
 
 clean:
-	del $(OBJECTS) $(EXECUTABLE) test.o test.exe DataTime.o testDataTime.o Array.o testDT.exe
+	del $(OBJECTS) $(EXECUTABLE) test.o test.exe DataTime.o testDataTime.o Array.o testDT.exe testJust.exe

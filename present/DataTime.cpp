@@ -39,12 +39,6 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	{
 		time.addElement((unsigned char)input[i]);
 	}
-	if (time.size == 0)
-	{
-		hours = 0;
-		minutes = 0;
-		return;
-	}
 	short cnt = 0;
 	for (int i = 0; i < data.size; ++i)
 	{
@@ -124,6 +118,12 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 		throw fooError("Wrong date format: ",19, data);
 	}
 	cnt = 0;
+	if (time.size == 0)
+	{
+		hours = 0;
+		minutes = 0;
+		return;
+	}
 	for (int i = 0; i < time.size; ++i)
 	{
 		if (!('0' <= time.m_bytes[i] <= '9') and !(time.m_bytes[i] == ':'))
@@ -233,14 +233,19 @@ std::ostream& operator<<(std::ostream& out, const DataTime& x)
 bool DataTime::operator<(const DataTime& right)
 {
 	if (this->year < right.year) { return true; }
+	else if (this->year > right.year) { return false; }
 	if (this->month < right.month) { return true; }
+	else if (this->month > right.month) { return false; }
 	if (this->day < right.day) { return true; }
+	else if (this->day > right.day) { return false; }
 	if (this->hours < right.hours) { return true; }
+	else if (this->hours > right.hours) { return false; }
 	if (this->minutes < right.minutes) { return true; }
+	else if (this->minutes > right.minutes) { return false; }
 	return false;
 }
 
-DataTime::DataTime(unsigned char day, unsigned char month, unsigned char year, unsigned char hours, unsigned char minutes)
+DataTime::DataTime(short day, short month, short year, short hours, short minutes)
 {
 	this->day = day;
 	this->month = month;
