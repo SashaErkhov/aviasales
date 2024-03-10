@@ -978,45 +978,57 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 	DataBase tmp2 = *this;
 	tmp2.clearDB();
 	tmp2.sortingPrice();
-	for (int i = 0; i < size; ++i)
+	for (int i = 0; i < tmp2.size; ++i)
 	{
-		if ((char)airFrom.m_bytes[0] == this->data[i].getAirFrom()[0] and
-			(char)airFrom.m_bytes[1] == this->data[i].getAirFrom()[1] and
-			(char)airFrom.m_bytes[2] == this->data[i].getAirFrom()[2] and
-			(char)airFrom.m_bytes[3] == this->data[i].getAirFrom()[3] and
-			this->data[i].getPrice() != 0)
+		if ((char)airFrom.m_bytes[0] == tmp2.data[i].getAirFrom()[0] and
+			(char)airFrom.m_bytes[1] == tmp2.data[i].getAirFrom()[1] and
+			(char)airFrom.m_bytes[2] == tmp2.data[i].getAirFrom()[2] and
+			(char)airFrom.m_bytes[3] == tmp2.data[i].getAirFrom()[3])
 		{
-			for (int j = 0; j < size; ++j)
+			for (int j = 0; j < tmp2.size; ++j)
 			{
-				if ((char)airTo.m_bytes[0] == this->data[j].getAirTo()[0] and
-					(char)airTo.m_bytes[1] == this->data[j].getAirTo()[1] and
-					(char)airTo.m_bytes[2] == this->data[j].getAirTo()[2] and
-					(char)airTo.m_bytes[3] == this->data[j].getAirTo()[3] and
-					this->data[j].getPrice() != 0)
+				if ((char)airTo.m_bytes[0] == tmp2.data[j].getAirTo()[0] and
+					(char)airTo.m_bytes[1] == tmp2.data[j].getAirTo()[1] and
+					(char)airTo.m_bytes[2] == tmp2.data[j].getAirTo()[2] and
+					(char)airTo.m_bytes[3] == tmp2.data[j].getAirTo()[3])
 				{
-					if (this->data[i].getAirTo()[0] == this->data[j].getAirFrom()[0] and
-						this->data[i].getAirTo()[1] == this->data[j].getAirFrom()[1] and
-						this->data[i].getAirTo()[2] == this->data[j].getAirFrom()[2] and
-						this->data[i].getAirTo()[3] == this->data[j].getAirFrom()[3])
+					if (tmp2.data[i].getAirTo()[0] == tmp2.data[j].getAirFrom()[0] and
+						tmp2.data[i].getAirTo()[1] == tmp2.data[j].getAirFrom()[1] and
+						tmp2.data[i].getAirTo()[2] == tmp2.data[j].getAirFrom()[2] and
+						tmp2.data[i].getAirTo()[3] == tmp2.data[j].getAirFrom()[3])
 					{
-						if (tmp.size != 0 and (tmp.data[0].getPrice() > (data[i].getPrice() + data[j].getPrice())))
+						if (tmp.size != 0 and (tmp.data[0].getPrice() > 
+							(tmp2.data[i].getPrice() + tmp2.data[j].getPrice())))
 						{
-							std::cout << data[i].getNomFli() << ", " << data[i].getAirFrom() << ", " <<
-								data[i].getAirTo() << ", " << data[i].getDataFrom() << ", " <<
-								data[i].getDataTo() << ", " << data[i].getCntTickets() << ", " <<
-								data[i].getPrice() << std::endl;
-							std::cout << data[j].getNomFli() << ", " << data[j].getAirFrom() << ", " <<
-								data[j].getAirTo() << ", " << data[j].getDataFrom() << ", " <<
-								data[j].getDataTo() << ", " << data[j].getCntTickets() << ", " <<
-								data[j].getPrice() << std::endl;
+							std::cout << tmp2.data[i].getNomFli() << ", " << tmp2.data[i].getAirFrom() << ", " <<
+								tmp2.data[i].getAirTo() << ", " << tmp2.data[i].getDataFrom() << ", " <<
+								tmp2.data[i].getDataTo() << ", " << tmp2.data[i].getCntTickets() << ", " <<
+								tmp2.data[i].getPrice() << std::endl;
+							std::cout << tmp2.data[j].getNomFli() << ", " << tmp2.data[j].getAirFrom() << ", " <<
+								tmp2.data[j].getAirTo() << ", " << tmp2.data[j].getDataFrom() << ", " <<
+								tmp2.data[j].getDataTo() << ", " << tmp2.data[j].getCntTickets() << ", " <<
+								tmp2.data[j].getPrice() << std::endl;
 							return;
 						}
-						else if (tmp.size != 0)
+						else if (tmp.size != 0 and (tmp.data[0].getPrice() <=
+							(tmp2.data[i].getPrice() + tmp2.data[j].getPrice())))
 						{
-							std::cout << tmp.data[i].getNomFli() << ", " << tmp.data[i].getAirFrom() << ", " <<
-								tmp.data[i].getAirTo() << ", " << tmp.data[i].getDataFrom() << ", " <<
-								tmp.data[i].getDataTo() << ", " << tmp.data[i].getCntTickets() << ", " <<
-								tmp.data[i].getPrice() << std::endl;
+							std::cout << tmp.data[0].getNomFli() << ", " << tmp.data[0].getAirFrom() << ", " <<
+								tmp.data[0].getAirTo() << ", " << tmp.data[0].getDataFrom() << ", " <<
+								tmp.data[0].getDataTo() << ", " << tmp.data[0].getCntTickets() << ", " <<
+								tmp.data[0].getPrice() << std::endl;
+							return;
+						}
+						else
+						{
+							std::cout << tmp2.data[i].getNomFli() << ", " << tmp2.data[i].getAirFrom() << ", " <<
+								tmp2.data[i].getAirTo() << ", " << tmp2.data[i].getDataFrom() << ", " <<
+								tmp2.data[i].getDataTo() << ", " << tmp2.data[i].getCntTickets() << ", " <<
+								tmp2.data[i].getPrice() << std::endl;
+							std::cout << tmp2.data[j].getNomFli() << ", " << tmp2.data[j].getAirFrom() << ", " <<
+								tmp2.data[j].getAirTo() << ", " << tmp2.data[j].getDataFrom() << ", " <<
+								tmp2.data[j].getDataTo() << ", " << tmp2.data[j].getCntTickets() << ", " <<
+								tmp2.data[j].getPrice() << std::endl;
 							return;
 						}
 					}
