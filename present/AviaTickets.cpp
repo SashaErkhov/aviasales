@@ -978,6 +978,10 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 	DataBase tmp2 = *this;
 	tmp2.clearDB();
 	tmp2.sortingPrice();
+	long double minPrice = 1.79769e+308;
+	AviaTickets min1;
+	AviaTickets min2;
+	bool prOk = false;
 	for (int i = 0; i < tmp2.size; ++i)
 	{
 		if ((char)airFrom.m_bytes[0] == tmp2.data[i].getAirFrom()[0] and
@@ -995,48 +999,67 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 					if (tmp2.data[i].getAirTo()[0] == tmp2.data[j].getAirFrom()[0] and
 						tmp2.data[i].getAirTo()[1] == tmp2.data[j].getAirFrom()[1] and
 						tmp2.data[i].getAirTo()[2] == tmp2.data[j].getAirFrom()[2] and
-						tmp2.data[i].getAirTo()[3] == tmp2.data[j].getAirFrom()[3])
+						tmp2.data[i].getAirTo()[3] == tmp2.data[j].getAirFrom()[3] and
+						tmp2.data[i].getDataTo()<tmp2.data[j].getDataFrom())
 					{
-						if (tmp.size != 0 and (tmp.data[0].getPrice() > 
-							(tmp2.data[i].getPrice() + tmp2.data[j].getPrice())))
+						if ((tmp2.data[i].getPrice() + tmp2.data[j].getPrice()) < minPrice)
 						{
-							std::cout << tmp2.data[i].getNomFli() << ", " << tmp2.data[i].getAirFrom() << ", " <<
-								tmp2.data[i].getAirTo() << ", " << tmp2.data[i].getDataFrom() << ", " <<
-								tmp2.data[i].getDataTo() << ", " << tmp2.data[i].getCntTickets() << ", " <<
-								tmp2.data[i].getPrice() << std::endl;
-							std::cout << tmp2.data[j].getNomFli() << ", " << tmp2.data[j].getAirFrom() << ", " <<
-								tmp2.data[j].getAirTo() << ", " << tmp2.data[j].getDataFrom() << ", " <<
-								tmp2.data[j].getDataTo() << ", " << tmp2.data[j].getCntTickets() << ", " <<
-								tmp2.data[j].getPrice() << std::endl;
-							return;
-						}
-						else if (tmp.size != 0 and (tmp.data[0].getPrice() <=
-							(tmp2.data[i].getPrice() + tmp2.data[j].getPrice())))
-						{
-							std::cout << tmp.data[0].getNomFli() << ", " << tmp.data[0].getAirFrom() << ", " <<
-								tmp.data[0].getAirTo() << ", " << tmp.data[0].getDataFrom() << ", " <<
-								tmp.data[0].getDataTo() << ", " << tmp.data[0].getCntTickets() << ", " <<
-								tmp.data[0].getPrice() << std::endl;
-							return;
-						}
-						else
-						{
-							std::cout << tmp2.data[i].getNomFli() << ", " << tmp2.data[i].getAirFrom() << ", " <<
-								tmp2.data[i].getAirTo() << ", " << tmp2.data[i].getDataFrom() << ", " <<
-								tmp2.data[i].getDataTo() << ", " << tmp2.data[i].getCntTickets() << ", " <<
-								tmp2.data[i].getPrice() << std::endl;
-							std::cout << tmp2.data[j].getNomFli() << ", " << tmp2.data[j].getAirFrom() << ", " <<
-								tmp2.data[j].getAirTo() << ", " << tmp2.data[j].getDataFrom() << ", " <<
-								tmp2.data[j].getDataTo() << ", " << tmp2.data[j].getCntTickets() << ", " <<
-								tmp2.data[j].getPrice() << std::endl;
-							return;
+							minPrice = (tmp2.data[i].getPrice() + tmp2.data[j].getPrice());
+							min1 = tmp2.data[i];
+							min2 = tmp2.data[j];
+							prOk = true;
 						}
 					}
 				}
 			}
 		}
 	}
-	std::cout << "no tickets" << std::endl;
+	if (!prOk and tmp.size==0)
+	{
+		std::cout << "no tickets" << std::endl;
+	}
+	else if (!prOk and tmp.size != 0)
+	{
+		std::cout << tmp.data[0].getNomFli() << ", " << tmp.data[0].getAirFrom() << ", " <<
+			tmp.data[0].getAirTo() << ", " << tmp.data[0].getDataFrom() << ", " <<
+			tmp.data[0].getDataTo() << ", " << tmp.data[0].getCntTickets() << ", " <<
+			std::fixed << std::setprecision(2) <<
+			tmp.data[0].getPrice() << std::endl;
+	}
+	else if(prOk and tmp.size==0)
+	{
+		std::cout << min1.getNomFli() << ", " << min1.getAirFrom() << ", " <<
+			min1.getAirTo() << ", " << min1.getDataFrom() << ", " <<
+			min1.getDataTo() << ", " << min1.getCntTickets() << ", " <<
+			std::fixed << std::setprecision(2) <<
+			min1.getPrice() << std::endl;
+		std::cout << min2.getNomFli() << ", " << min2.getAirFrom() << ", " <<
+			min2.getAirTo() << ", " << min2.getDataFrom() << ", " <<
+			min2.getDataTo() << ", " << min2.getCntTickets() << ", " <<
+			std::fixed << std::setprecision(2) <<
+			min2.getPrice() << std::endl;
+	}
+	else if (prOk and tmp.size != 0 and tmp.data[0].getPrice() <= minPrice)
+	{
+		std::cout << tmp.data[0].getNomFli() << ", " << tmp.data[0].getAirFrom() << ", " <<
+			tmp.data[0].getAirTo() << ", " << tmp.data[0].getDataFrom() << ", " <<
+			tmp.data[0].getDataTo() << ", " << tmp.data[0].getCntTickets() << ", " <<
+			std::fixed << std::setprecision(2) <<
+			tmp.data[0].getPrice() << std::endl;
+	}
+	else if (prOk and tmp.size != 0 and tmp.data[0].getPrice() > minPrice)
+	{
+		std::cout << min1.getNomFli() << ", " << min1.getAirFrom() << ", " <<
+			min1.getAirTo() << ", " << min1.getDataFrom() << ", " <<
+			min1.getDataTo() << ", " << min1.getCntTickets() << ", " <<
+			std::fixed << std::setprecision(2) <<
+			min1.getPrice() << std::endl;
+		std::cout << min2.getNomFli() << ", " << min2.getAirFrom() << ", " <<
+			min2.getAirTo() << ", " << min2.getDataFrom() << ", " <<
+			min2.getDataTo() << ", " << min2.getCntTickets() << ", " <<
+			std::fixed << std::setprecision(2) <<
+			min2.getPrice() << std::endl;
+	}
 }
 
 void DataBase::buy(const unsigned char* str, unsigned int strSize)
