@@ -253,3 +253,24 @@ DataTime::DataTime(short day, short month, short year, short hours, short minute
 	this->hours = hours;
 	this->minutes = minutes;
 }
+
+void DataTime::printTime()const
+{
+	if (this->getHours() < 10)
+	{
+		std::cout << '0' << this->getHours();
+	}
+	else
+	{
+		std::cout << this->getHours();
+	}
+	std::cout << ':';
+	if (this->getMinutes() < 10)
+	{
+		std::cout << '0' << this->getMinutes();
+	}
+	else
+	{
+		std::cout << this->getMinutes();
+	}
+}

@@ -19,7 +19,11 @@ test:
 	Project2 < ../../Project2/input6.txt
 	echo -------------------------
 	Project2 < ../../Project2/input7.txt
-	# Project2 < ../../Project2/input8.txt > ../../Project2/out8.txt
+	Project2 < ../../Project2/input8.txt > ../../Project2/out8.txt
+	Project2 < ../../Project2/input9.txt > ../../Project2/out9.txt
+	Project2 < ../../Project2/input10.txt > ../../Project2/out10.txt
+	Project2 < ../../Project2/input11.txt > ../../Project2/out11.txt
+	# Project2 < ../../Project2/input12.txt > ../../Project2/out12.txt
 
 testJust : test.o Array.o
 	$(CC) $(LDFLAGS) Array.o test.o -o $@

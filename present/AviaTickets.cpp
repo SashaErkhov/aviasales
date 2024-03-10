@@ -151,19 +151,6 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	{
 		throw "Unknown command";
 	}
-
-	/*for (int i = index; i < strSize; ++i)
-	{
-		if (str[i] != ',' and str[i] != 0)
-		{
-			dtTo.addElement(str[i]);
-		}
-		else if ((str[i] == ',') or (str[i] == 0))
-		{
-			return true;
-		}
-	}*/
-
 	try
 	{
 		this->DTFrom = DataTime((char*)dtFrom.m_bytes, dtFrom.size);
@@ -788,9 +775,9 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 			this->data[i].getDataFrom().getDay() == tmp.getDay())
 		{
 			bool ok = true;
-			for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
 			{
-				if (this->data[i].getAirFrom()[i] != (char)airFrom.m_bytes[i])
+				if (this->data[i].getAirFrom()[j] != (char)airFrom.m_bytes[j])
 				{
 					ok = false;
 				}
@@ -804,8 +791,26 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 	tmpDB.sortingData();
 	for (int i = 0; i < tmpDB.size; ++i)
 	{
-		std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirTo() << ", "
-			<< tmpDB.data[i].getDataFrom().getHours()<<':'<< tmpDB.data[i].getDataFrom().getMinutes() << std::endl;
+		bool ok2 = false;
+		if (i == 0 or !(
+			tmpDB.data[i].getDataFrom().getYear() == tmpDB.data[i - 1].getDataFrom().getYear() and
+			tmpDB.data[i].getDataFrom().getMonth() == tmpDB.data[i - 1].getDataFrom().getMonth() and
+			tmpDB.data[i].getDataFrom().getDay() == tmpDB.data[i - 1].getDataFrom().getDay() and
+			tmpDB.data[i].getDataFrom().getHours() == tmpDB.data[i - 1].getDataFrom().getHours() and
+			tmpDB.data[i].getDataFrom().getMinutes() == tmpDB.data[i - 1].getDataFrom().getMinutes() and
+			tmpDB.data[i].getAirFrom()[0] == tmpDB.data[i - 1].getAirFrom()[0] and
+			tmpDB.data[i].getAirFrom()[1] == tmpDB.data[i - 1].getAirFrom()[1] and
+			tmpDB.data[i].getAirFrom()[2] == tmpDB.data[i - 1].getAirFrom()[2] and
+			tmpDB.data[i].getAirFrom()[3] == tmpDB.data[i - 1].getAirFrom()[3]))
+		{
+			ok2 = true;
+		}
+		if (ok2)
+		{
+			std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirTo() << ", ";
+			tmpDB.data[i].getDataFrom().printTime();
+			std::cout << std::endl;
+		}
 	}
 }
 
@@ -815,7 +820,7 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 	unsigned int index = 5;
 	for (int i = index; i < strSize; ++i)
 	{
-		if (str[i] != ',' and str[i] != 0)
+		if (str[i] != ' ' and str[i] != 0)
 		{
 			airFrom.addElement(str[i]);
 		}
@@ -826,9 +831,13 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 	}
 	Arry airTo;
 	index += airFrom.size + 4;
+	for (int i = airFrom.size; i < 4; ++i)
+	{
+		airFrom.addElement('\0');
+	}
 	for (int i = index; i < strSize; ++i)
 	{
-		if (str[i] != ',' and str[i] != 0)
+		if (str[i] != ' ' and str[i] != 0)
 		{
 			airTo.addElement(str[i]);
 		}
@@ -839,9 +848,13 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 	}
 	Arry DTFrom;
 	index += airTo.size + 4;
+	for (int i = airTo.size; i < 4; ++i)
+	{
+		airTo.addElement('\0');
+	}
 	for (int i = index; i < strSize; ++i)
 	{
-		if (str[i] != ',' and str[i] != 0)
+		if (str[i] != ' ' and str[i] != 0)
 		{
 			DTFrom.addElement(str[i]);
 		}
@@ -850,6 +863,7 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 			break;
 		}
 	}
+	DTFrom.addElement('\0');
 	DataTime tmp;
 	try
 	{
@@ -873,15 +887,17 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 			this->data[i].getDataFrom().getDay() == tmp.getDay())
 		{
 			bool ok = true;
-			for (int i = 0; i < 4; ++i)
+			for (int j = 0; j < 4; ++j)
 			{
-				if (this->data[i].getAirFrom()[i] != (char)airFrom.m_bytes[i])
+				if (this->data[i].getAirFrom()[j] != (char)airFrom.m_bytes[j])
 				{
 					ok = false;
+					break;
 				}
-				if (this->data[i].getAirTo()[i] != (char)airTo.m_bytes[i])
+				if (this->data[i].getAirTo()[j] != (char)airTo.m_bytes[j])
 				{
 					ok = false;
+					break;
 				}
 			}
 			if (ok)
@@ -902,6 +918,7 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 		std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirFrom() << ", " <<
 			tmpDB.data[i].getAirTo() << ", " << tmpDB.data[i].getDataFrom() << ", " <<
 			tmpDB.data[i].getDataTo() << ", " << tmpDB.data[i].getCntTickets() << ", " <<
+			std::fixed << std::setprecision(2) <<
 			tmpDB.data[i].getPrice() << std::endl;
 	}
 }
@@ -956,8 +973,11 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 			tmp.addElement(this->data[i]);
 		}
 	}
+	tmp.clearDB();
 	tmp.sortingPrice();
-	this->sortingPrice();
+	DataBase tmp2 = *this;
+	tmp2.clearDB();
+	tmp2.sortingPrice();
 	for (int i = 0; i < size; ++i)
 	{
 		if ((char)airFrom.m_bytes[0] == this->data[i].getAirFrom()[0] and

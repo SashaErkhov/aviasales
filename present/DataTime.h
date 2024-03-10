@@ -25,6 +25,7 @@ public:
 	short getHours() const { return hours; }
 	short getMinutes() const { return minutes; }
 	bool operator<(const DataTime& right);
+	void printTime()const;
 };
 
 #endif // !DATA_TIME_CLASS_PVM_2023
