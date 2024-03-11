@@ -2,7 +2,7 @@
 #include "Array.h"
 #include <iostream>
 
-const Arry fooError(const char* phraze,unsigned short size, const Arry& data)
+Arry fooError(const char* phraze,unsigned short size, const Arry& data)
 {
 	Arry error;
 	error.addPhraze(phraze, size);
@@ -35,18 +35,19 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 		throw "Unknown command";
 	}
 	Arry time;
-	for (int i = (data.size+1); i < size; ++i)
+	for (unsigned long long i = (data.size+1); i < size; ++i)
 	{
 		time.addElement((unsigned char)input[i]);
 	}
 	short cnt = 0;
 	for (int i = 0; i < data.size; ++i)
 	{
-		if (!('0' <= data.m_bytes[i] <= '9') and !(data.m_bytes[i] == '.'))
+		if (!('0' <= data.m_bytes[i] and data.m_bytes[i] <= '9') and !(data.m_bytes[i] == '.') and
+			!(data.m_bytes[i] == '\0'))
 		{
 			throw fooError("Wrong date format: ",19, data);
 		}
-		else if (data.m_bytes[i] == '.')
+		if (data.m_bytes[i] == '.')
 		{
 			++cnt;
 		}
@@ -71,17 +72,15 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 	{
 		throw fooError("Wrong date format: ", 19, data);
 	}
-	else
-	{
-		day = std::atoi((const char*)dayStr.m_bytes);
-	}
+	dayStr.addElement('\0');
+	day = std::atoi((const char*)dayStr.m_bytes);
 	if ((day < 1) or (day > 31))
 	{
 		//throw fooError("Day value is invalid: ",22, dayStr);
 		throw day;
 	}
 	Arry monthStr;
-	for (int i = (dayStr.size + 1); i < data.size; ++i)
+	for (unsigned long long i = (dayStr.size); i < data.size; ++i)
 	{
 		if (data.m_bytes[i] != '.')
 		{
@@ -92,16 +91,18 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 			break;
 		}
 	}
+	monthStr.addElement('\0');
 	month = std::atoi((const char*)monthStr.m_bytes);
 	if ((month < 1) or (month > 12))
 	{
 		throw fooError("Month value is invalid: ",24, monthStr);
 	}
 	Arry yearStr;
-	for (int i = (dayStr.size+monthStr.size + 2); i < data.size; ++i)
+	for (unsigned long long i = (dayStr.size+monthStr.size); i < data.size; ++i)
 	{
 		yearStr.addElement(data.m_bytes[i]);
 	}
+	yearStr.addElement('\0');
 	year = std::atoi((const char*)yearStr.m_bytes);
 	if (month == 2 and day == 29)
 	{
@@ -109,20 +110,23 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 		{
 			if (year % 400 != 0)
 			{
-				throw fooError("Wrong date format: ",19, data);
+				//throw fooError("Wrong date format: ",19, data);
+				throw day;
 			}
 		}
 		else
 		{
 			if (year % 4 != 0)
 			{
-				throw fooError("Wrong date format: ",19, data);
+				throw day;
+				//throw fooError("Wrong date format: ",19, data);
 			}
 		}
 	}
 	else if (month == 2 and day > 29)
 	{
-		throw fooError("Wrong date format: ",19, data);
+		throw day;
+		//throw fooError("Wrong date format: ",19, data);
 	}
 	cnt = 0;
 	if (time.size == 0)
@@ -131,13 +135,18 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 		minutes = 0;
 		return;
 	}
+	if (time.m_bytes[0] == ' ') { time.m_bytes[0] = '0'; }
 	for (int i = 0; i < time.size; ++i)
 	{
-		if (!('0' <= time.m_bytes[i] <= '9') and !(time.m_bytes[i] == ':'))
+		if (time.m_bytes[i] == '\0')
+		{
+			break;
+		}
+		if (!('0' <= time.m_bytes[i] and time.m_bytes[i] <= '9') and !(time.m_bytes[i] == ':'))
 		{
 			throw fooError("Wrong time format: ",19, time);
 		}
-		else if (time.m_bytes[i] == ':')
+		if (time.m_bytes[i] == ':')
 		{
 			++cnt;
 		}
@@ -159,13 +168,15 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 		}
 	}
 	Arry minutesStr;
-	for (int i = (hoursStr.size + 1); i < time.size; ++i)
+	for (unsigned long long i = (hoursStr.size + 1); i < time.size; ++i)
 	{
 		minutesStr.addElement(time.m_bytes[i]);
 	}
+	hoursStr.addElement('\0');
 	hours = std::atoi((const char*)hoursStr.m_bytes);
+	minutesStr.addElement('\0');
 	minutes = std::atoi((const char*)minutesStr.m_bytes);
-	if (hours < 0 or hours>24 or minutes < 0 or minutes>60)
+	if (hours < 0 or hours>=24 or minutes < 0 or minutes>=60)
 	{
 		throw fooError("Time value is invalid: ",23, time);
 	}
@@ -237,18 +248,18 @@ std::ostream& operator<<(std::ostream& out, const DataTime& x)
 	return out;
 }
 
-bool DataTime::operator<(const DataTime& right)
+bool DataTime::operator<(const DataTime& right) const
 {
 	if (this->year < right.year) { return true; }
-	else if (this->year > right.year) { return false; }
+	if (this->year > right.year) { return false; }
 	if (this->month < right.month) { return true; }
-	else if (this->month > right.month) { return false; }
+	if (this->month > right.month) { return false; }
 	if (this->day < right.day) { return true; }
-	else if (this->day > right.day) { return false; }
+	if (this->day > right.day) { return false; }
 	if (this->hours < right.hours) { return true; }
-	else if (this->hours > right.hours) { return false; }
+	if (this->hours > right.hours) { return false; }
 	if (this->minutes < right.minutes) { return true; }
-	else if (this->minutes > right.minutes) { return false; }
+	if (this->minutes > right.minutes) { return false; }
 	return false;
 }
 

@@ -12,7 +12,7 @@ $(EXECUTABLE): $(OBJECTS)
 
 test:
 	Project2 < ../../Project2/input1.txt > out1.txt
-	Project2 < ../../Project2/input2.txt > out2.txt
+	# Project2 < ../../Project2/input2.txt > out2.txt
 	Project2 < ../../Project2/input3.txt > out3.txt
 	Project2 < ../../Project2/input4.txt > out4.txt
 	Project2 < ../../Project2/input5.txt > out5.txt
@@ -30,8 +30,8 @@ test:
 	Project2 < ../../Project2/input13.txt > ../../Project2/out16.txt
 	echo -------------------------
 	Project2 < ../../Project2/inpute1.txt > ../../Project2/oute1.txt
-	# Project2 < ../../Project2/inpute2.txt > ../../Project2/oute2.txt
-	# Project2 < ../../Project2/inpute3.txt > ../../Project2/oute3.txt
+	Project2 < ../../Project2/inpute2.txt > ../../Project2/oute2.txt
+	Project2 < ../../Project2/inpute3.txt > ../../Project2/oute3.txt
 	# Project2 < ../../Project2/inpute4.txt > ../../Project2/oute4.txt
 
 

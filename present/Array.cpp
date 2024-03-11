@@ -27,11 +27,11 @@ Arry::Arry(const Arry& X)
 
 Arry::~Arry() 
 {
-	delete m_bytes;
+	delete[] m_bytes;
 	size = 0;
 }
 
-unsigned char Arry::getElement(unsigned long long int pos)
+unsigned char Arry::getElement(unsigned long long int pos) const
 {
 	return m_bytes[pos];
 }
@@ -48,7 +48,7 @@ void Arry::addElement(unsigned char elem)
 	++size;
 }
 
-void Arry::setElement(unsigned long long int pos, unsigned char value)
+void Arry::setElement(unsigned long long int pos, unsigned char value)const
 {
 	m_bytes[pos] = value;
 }
@@ -61,7 +61,6 @@ void Arry::addPhraze(const char* phraze, unsigned int size)
 	}
 }
 
-#include <iostream>
 Arry& Arry::operator=(const Arry& X)
 {
 	if (this != &X)

@@ -31,7 +31,7 @@ int main()
 		{
 			break;
 		}
-		else if (command.m_bytes[0] == 'l' and command.m_bytes[1] == 'o' and 
+		if (command.m_bytes[0] == 'l' and command.m_bytes[1] == 'o' and 
 			command.m_bytes[2] == 'a' and command.m_bytes[3] == 'd' and command.size==4)
 		{
 			try
@@ -106,9 +106,12 @@ int main()
 			{
 				for (int i = 0; i < error.size; ++i)
 				{
-					std::cout << error.m_bytes[i];
+					if (error.m_bytes[i] != '\0')
+					{
+						std::cout << error.m_bytes[i];
+					}
 				}
-				//std::cout << std::endl;
+				std::cout << std::endl;
 			}
 			catch (...)
 			{

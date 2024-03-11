@@ -1,4 +1,3 @@
-#pragma once
 #ifndef DATA_TIME_CLASS_PVM_2023
 #define DATA_TIME_CLASS_PVM_2023
 
@@ -19,12 +18,12 @@ public:
 	DataTime(const char* input, unsigned int size);
 	DataTime();
 	DataTime(short day, short month, short year, short hours, short minutes);
-	short getDay() const { return day; }
-	short getMonth() const { return month; }
-	short getYear() const { return year; }
-	short getHours() const { return hours; }
-	short getMinutes() const { return minutes; }
-	bool operator<(const DataTime& right);
+	unsigned short getDay() const { return day; }
+	unsigned short getMonth() const { return month; }
+	unsigned short getYear() const { return year; }
+	unsigned short getHours() const { return hours; }
+	unsigned short getMinutes() const { return minutes; }
+	bool operator<(const DataTime& right) const;
 	void printTime()const;
 };
 

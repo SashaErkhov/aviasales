@@ -1,4 +1,3 @@
-#pragma once
 #ifndef ARRAY_OUR_WORK
 #define ARRAY_OUR_WORK
 
@@ -11,8 +10,8 @@ public:
 	void addElement(unsigned char elem);
 	void addPhraze(const char* phraze, unsigned int size);
 	//void removeEleent(size_t pos);
-	unsigned char getElement(unsigned long long int pos);
-	void setElement(unsigned long long int pos, unsigned char value);
+	unsigned char getElement(unsigned long long int pos)const;
+	void setElement(unsigned long long int pos, unsigned char value) const;
 	//void resize(size_t new_size);
 	~Arry();
 	unsigned long long int getSize() const

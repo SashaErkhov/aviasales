@@ -1,4 +1,3 @@
-#pragma once
 #ifndef AVIASALES_CLASS_PVM_2023
 #define AVIASALES_CLASS_PVM_2023
 
@@ -19,8 +18,8 @@ private:
 	long double priceTickets;
 	unsigned int ID;
 public:
-	AviaTickets(char* nomberOfFlight, char* airportFrom, char* airportTo,
-		const DataTime& DTFrom,const DataTime& DTTo, unsigned long long int cntTickets,
+	AviaTickets(const char* nomberOfFlight,const char* airportFrom,const char* airportTo,
+		const DataTime& DTFrom,const DataTime& DTTo,unsigned long long int cntTickets,
 		long double priceTickets,unsigned int ID);
 	AviaTickets(const unsigned char* str, unsigned int strSize,unsigned int ID);
 	AviaTickets();
@@ -28,7 +27,7 @@ public:
 	bool operator<(const AviaTickets& right)const;
 	bool operator<=(const AviaTickets& right)const;
 	bool operator==(const AviaTickets& right)const;
-	AviaTickets& operator=(const AviaTickets& X);
+	//AviaTickets& operator=(const AviaTickets& X);
 	unsigned int getID()const { return ID; }
 	const char* getNomFli()const { return nomberOfFlight; }
 	const char* getAirFrom()const { return airportFrom; }
@@ -44,10 +43,10 @@ class DataBase
 {
 private:
 	AviaTickets* data;
-	unsigned long long int size;
+	long long int size;
 public:
 	DataBase(const DataBase& X);
-	DataBase(unsigned long long int size=0);
+	DataBase(long long int size=0);
 	~DataBase();
 	void addElement(const AviaTickets& input);
 	AviaTickets getElement(unsigned long long int pos);
@@ -68,7 +67,7 @@ public:
 	void exportDB(const unsigned char* str, unsigned int strSize)const;
 	DataBase& operator=(const DataBase& X);
 	void swap(DataBase& other);
-	unsigned long long int getIndex(const unsigned int ID)const;
+	unsigned long long int getIndex(unsigned int ID)const;
 };
 
 #endif // !AVIASALES_CLASS_PVM_2023

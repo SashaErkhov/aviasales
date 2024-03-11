@@ -5,9 +5,9 @@
 #include <iomanip>
 #include <fstream>
 
-AviaTickets::AviaTickets(char* nomberOfFlight, char* airportFrom, char* airportTo,
-	const DataTime& DTFrom, const DataTime& DTTo, unsigned long long int cntTickets,
-	long double priceTickets, unsigned int ID)
+AviaTickets::AviaTickets(const char* nomberOfFlight, const char* airportFrom, const char* airportTo,
+	const DataTime& DTFrom, const DataTime& DTTo, const unsigned long long int cntTickets,
+	const long double priceTickets, const unsigned int ID)
 {
 	for (int i = 0; i < 8; ++i)
 	{
@@ -25,9 +25,9 @@ AviaTickets::AviaTickets(char* nomberOfFlight, char* airportFrom, char* airportT
 	this->ID = ID;
 }
 
-bool fooKons(Arry& x, const unsigned char* str, unsigned int startIndex, unsigned int strSize)
+bool fooKons(Arry& x, const unsigned char* str, unsigned long long startIndex, unsigned int strSize)
 {
-	for (int i = startIndex; i < strSize; ++i)
+	for (unsigned long long i = startIndex; i < strSize; ++i)
 	{
 		if (str[i] != ',' and str[i] != 0)
 		{
@@ -45,9 +45,9 @@ bool fooKons(Arry& x, const unsigned char* str, unsigned int startIndex, unsigne
 	return false;
 }
 
-bool fooKons2(Arry& x, const unsigned char* str, unsigned int startIndex, unsigned int strSize)
+bool fooKons2(Arry& x, const unsigned char* str, unsigned long long startIndex, unsigned int strSize)
 {
-	for (int i = startIndex; i < strSize; ++i)
+	for (unsigned long long i = startIndex; i < strSize; ++i)
 	{
 		if (str[i] != ',' and str[i] != 0 and str[i]!=' ')
 		{
@@ -95,10 +95,10 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	{
 		throw "Unknown command";
 	}
-	unsigned int index = 4 + newNomFli.size;
+	unsigned long long index = 4 + newNomFli.size;
 	while (str[index] == ' ' or str[index] == ',') { ++index; }
 	newNomFli.addElement('\0');
-	for (int i = 0; i < newNomFli.size; ++i)
+	for (unsigned long long i = 0; i < newNomFli.size; ++i)
 	{
 		nomberOfFlight[i] = (char)newNomFli.m_bytes[i];
 		if (nomberOfFlight[i] == ',' or nomberOfFlight[i] == ';' or nomberOfFlight[i] == '\"' or nomberOfFlight[i] == ' ')
@@ -110,7 +110,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 			nomberOfFlight[i] += 'A' - 'a';
 		}
 	}
-	for (int i = newNomFli.size + 1; i < 8; ++i)
+	for (unsigned long long i = newNomFli.size + 1; i < 8; ++i)
 	{
 		nomberOfFlight[i] = '\0';
 	}
@@ -122,7 +122,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	index += airFrom.size;
 	while (str[index] == ' ' or str[index] == ',') { ++index; }
 	airFrom.addElement('\0');
-	for (int i = 0; i < airFrom.size; ++i)
+	for (unsigned long long i = 0; i < airFrom.size; ++i)
 	{
 		airportFrom[i] = (char)airFrom.m_bytes[i];
 		if (airportFrom[i] == ',' or airportFrom[i] == ';' or airportFrom[i] == '\"' or airportFrom[i] == ' ')
@@ -134,7 +134,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 			airportFrom[i] += 'A' - 'a';
 		}
 	}
-	for (int i = airFrom.size + 1; i < 4; ++i)
+	for (unsigned long long i = airFrom.size + 1; i < 4; ++i)
 	{
 		airportFrom[i] = '\0';
 	}
@@ -146,7 +146,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	index += airTo.size;
 	while (str[index] == ' ' or str[index] == ',') { ++index; }
 	airTo.addElement('\0');
-	for (int i = 0; i < airTo.size; ++i)
+	for (unsigned long long i = 0; i < airTo.size; ++i)
 	{
 		airportTo[i] = (char)airTo.m_bytes[i];
 		if (airportTo[i] == ',' or airportTo[i] == ';' or airportTo[i] == '\"' or airportTo[i] == ' ')
@@ -158,7 +158,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 			airportTo[i] += 'A' - 'a';
 		}
 	}
-	for (int i = airTo.size + 1; i < 4; ++i)
+	for (unsigned long long i = airTo.size + 1; i < 4; ++i)
 	{
 		airportTo[i] = '\0';
 	}
@@ -213,6 +213,7 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	{
 		throw "Unknown command";
 	}
+	price.addElement('\0');
 	this->priceTickets = std::atof((char*)price.m_bytes);
 	this->ID = ID;
 	if (DTTo < DTFrom)
@@ -239,37 +240,37 @@ AviaTickets::AviaTickets(const AviaTickets& X)
 	ID = X.ID;
 }
 
-AviaTickets& AviaTickets::operator=(const AviaTickets& X)
-{
-	for (int i = 0; i < 8; ++i)
-	{
-		this->nomberOfFlight[i] = X.nomberOfFlight[i];
-	}
-	for (int i = 0; i < 4; ++i)
-	{
-		this->airportFrom[i] = X.airportFrom[i];
-		this->airportTo[i] = X.airportTo[i];
-	}
-	DTFrom = X.DTFrom;
-	DTTo = X.DTTo;
-	cntTickets = X.cntTickets;
-	priceTickets = X.priceTickets;
-	ID = X.ID;
-	return *this;
-}
+//AviaTickets& AviaTickets::operator=(const AviaTickets& X)
+//{
+//	for (int i = 0; i < 8; ++i)
+//	{
+//		this->nomberOfFlight[i] = X.nomberOfFlight[i];
+//	}
+//	for (int i = 0; i < 4; ++i)
+//	{
+//		this->airportFrom[i] = X.airportFrom[i];
+//		this->airportTo[i] = X.airportTo[i];
+//	}
+//	DTFrom = X.DTFrom;
+//	DTTo = X.DTTo;
+//	cntTickets = X.cntTickets;
+//	priceTickets = X.priceTickets;
+//	ID = X.ID;
+//	return *this;
+//}
 
 bool AviaTickets::operator<(const AviaTickets& right)const
 {
 	if (this->getDataFrom().getYear()< right.getDataFrom().getYear()) { return true; }
-	else if (this->getDataFrom().getYear() > right.getDataFrom().getYear()) { return false; }
+	if (this->getDataFrom().getYear() > right.getDataFrom().getYear()) { return false; }
 	if (this->getDataFrom().getMonth() < right.getDataFrom().getMonth()) { return true; }
-	else if (this->getDataFrom().getMonth() > right.getDataFrom().getMonth()) { return false; }
+	if (this->getDataFrom().getMonth() > right.getDataFrom().getMonth()) { return false; }
 	if (this->getDataFrom().getDay() < right.getDataFrom().getDay()) { return true; }
-	else if (this->getDataFrom().getDay() > right.getDataFrom().getDay()) { return false; }
+	if (this->getDataFrom().getDay() > right.getDataFrom().getDay()) { return false; }
 	if (this->getDataFrom().getHours() < right.getDataFrom().getHours()) { return true; }
-	else if (this->getDataFrom().getHours() > right.getDataFrom().getHours()) { return false; }
+	if (this->getDataFrom().getHours() > right.getDataFrom().getHours()) { return false; }
 	if (this->getDataFrom().getMinutes() < right.getDataFrom().getMinutes()) { return true; }
-	else if (this->getDataFrom().getMinutes() > right.getDataFrom().getMinutes()) { return false; }
+	if (this->getDataFrom().getMinutes() > right.getDataFrom().getMinutes()) { return false; }
 	return false;
 }
 
@@ -279,7 +280,7 @@ bool AviaTickets::operator<=(const AviaTickets& right)const
 	{
 		return true;
 	}
-	else if (this->priceTickets == right.priceTickets)
+	if (this->priceTickets == right.priceTickets)
 	{
 		return (*this) < right;
 	}
@@ -289,22 +290,21 @@ bool AviaTickets::operator<=(const AviaTickets& right)const
 bool AviaTickets::operator==(const AviaTickets& right)const
 {
 	if (this->getDataFrom().getYear() < right.getDataFrom().getYear()) { return true; }
-	else if (this->getDataFrom().getYear() > right.getDataFrom().getYear()) { return false; }
+	if (this->getDataFrom().getYear() > right.getDataFrom().getYear()) { return false; }
 	if (this->getDataFrom().getMonth() < right.getDataFrom().getMonth()) { return true; }
-	else if (this->getDataFrom().getMonth() > right.getDataFrom().getMonth()) { return false; }
+	if (this->getDataFrom().getMonth() > right.getDataFrom().getMonth()) { return false; }
 	if (this->getDataFrom().getDay() < right.getDataFrom().getDay()) { return true; }
-	else if (this->getDataFrom().getDay() > right.getDataFrom().getDay()) { return false; }
+	if (this->getDataFrom().getDay() > right.getDataFrom().getDay()) { return false; }
 	if (this->getDataFrom().getHours() < right.getDataFrom().getHours()) { return true; }
-	else if (this->getDataFrom().getHours() > right.getDataFrom().getHours()) { return false; }
+	if (this->getDataFrom().getHours() > right.getDataFrom().getHours()) { return false; }
 	if (this->getDataFrom().getMinutes() < right.getDataFrom().getMinutes()) { return true; }
-	else if (this->getDataFrom().getMinutes() > right.getDataFrom().getMinutes()) { return false; }
+	if (this->getDataFrom().getMinutes() > right.getDataFrom().getMinutes()) { return false; }
 	for (int i = 0; i < 8; ++i)
 	{
 		if (this->nomberOfFlight[i] < right.nomberOfFlight[i]) { return true; }
-		else if (this->nomberOfFlight[i] > right.nomberOfFlight[i]) { return false; }
+		if (this->nomberOfFlight[i] > right.nomberOfFlight[i]) { return false; }
 	}
-	if (this->priceTickets < right.priceTickets) { return true; }
-	return false;
+	return this->priceTickets < right.priceTickets;
 }
 
 std::ostream& operator<<(std::ostream& out, const AviaTickets& x)
@@ -315,7 +315,7 @@ std::ostream& operator<<(std::ostream& out, const AviaTickets& x)
 	return out;
 }
 
-DataBase::DataBase(unsigned long long int size)
+DataBase::DataBase(long long int size)
 {
 	this->size = size;
 	data = new AviaTickets[size];
@@ -360,8 +360,8 @@ void DataBase::addElement(const AviaTickets& input)
 
 void DataBase::deleteDB(unsigned int ID)
 {
-	int index = -1;
-	for (int i = 0; i < size; ++i)
+	unsigned long long index = -1;
+	for (unsigned long long i = 0; i < size; ++i)
 	{
 		if (this->data[i].getID() == ID)
 		{
@@ -371,11 +371,11 @@ void DataBase::deleteDB(unsigned int ID)
 	}
 	if (index == -1) { return; }
 	DataBase tmp(size - 1);
-	for (int i = 0; i < index; ++i)
+	for (unsigned long long i = 0; i < index; ++i)
 	{
 		tmp.data[i] = this->data[i];
 	}
-	for (int i = index + 1; i < size; ++i)
+	for (unsigned long long i = index + 1; i < size; ++i)
 	{
 		tmp.data[i-1] = this->data[i];
 	}
@@ -407,10 +407,10 @@ void DataBase::clearDB()
 void DataBase::sortingData()
 {
 	// make heap
-	for (int i = size / 2; i >= 0; --i) {
+	for (long long i = size / 2; i >= 0; --i) {
 		// shift down each element
-		int pos = i;
-		int posMaxChild;
+		long long pos = i;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * pos + 1) < size) {
 			if (posMaxChild + 1 < size) {
 				if (data[posMaxChild] < data[posMaxChild + 1]) {
@@ -427,14 +427,14 @@ void DataBase::sortingData()
 		}
 	}
 	// shift down each element
-	int heapSize = size;
-	for (int step = 1; step < size; ++step) {
+	long long heapSize = size;
+	for (long long step = 1; step < size; ++step) {
 		if (data[heapSize - 1] < data[0]) {
 			std::swap(data[heapSize - 1], data[0]);
 		}
 		--heapSize;
-		int position = 0;
-		int posMaxChild;
+		long long position = 0;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * position + 1) < heapSize) {// Пока есть левый потомок
 			if (posMaxChild + 1 < heapSize) { // Есть ещё кто-то и справа
 				if (data[posMaxChild] < data[posMaxChild + 1]) {
@@ -455,10 +455,10 @@ void DataBase::sortingData()
 void DataBase::sortingDNP()
 {
 	// make heap
-	for (int i = size / 2; i >= 0; --i) {
+	for (long long i = size / 2; i >= 0; --i) {
 		// shift down each element
-		int pos = i;
-		int posMaxChild;
+		long long pos = i;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * pos + 1) < size) {
 			if (posMaxChild + 1 < size) {
 				if (data[posMaxChild] == data[posMaxChild + 1]) {
@@ -475,14 +475,14 @@ void DataBase::sortingDNP()
 		}
 	}
 	// shift down each element
-	int heapSize = size;
-	for (int step = 1; step < size; ++step) {
+	long long heapSize = size;
+	for (long long step = 1; step < size; ++step) {
 		if (data[heapSize - 1] == data[0]) {
 			std::swap(data[heapSize - 1], data[0]);
 		}
 		--heapSize;
-		int position = 0;
-		int posMaxChild;
+		long long position = 0;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * position + 1) < heapSize) {// Пока есть левый потомок
 			if (posMaxChild + 1 < heapSize) { // Есть ещё кто-то и справа
 				if (data[posMaxChild] == data[posMaxChild + 1]) {
@@ -503,10 +503,10 @@ void DataBase::sortingDNP()
 void DataBase::sortingPrice()
 {
 	// make heap
-	for (int i = size / 2; i >= 0; --i) {
+	for (long long i = size / 2; i >= 0; --i) {
 		// shift down each element
-		int pos = i;
-		int posMaxChild;
+		long long pos = i;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * pos + 1) < size) {
 			if (posMaxChild + 1 < size) {
 				if (data[posMaxChild] <= data[posMaxChild + 1]) {
@@ -523,14 +523,14 @@ void DataBase::sortingPrice()
 		}
 	}
 	// shift down each element
-	int heapSize = size;
-	for (int step = 1; step < size; ++step) {
+	long long heapSize = size;
+	for (long long step = 1; step < size; ++step) {
 		if (data[heapSize - 1] <= data[0]) {
 			std::swap(data[heapSize - 1], data[0]);
 		}
 		--heapSize;
-		int position = 0;
-		int posMaxChild;
+		long long position = 0;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * position + 1) < heapSize) {// Пока есть левый потомок
 			if (posMaxChild + 1 < heapSize) { // Есть ещё кто-то и справа
 				if (data[posMaxChild] <= data[posMaxChild + 1]) {
@@ -551,10 +551,10 @@ void DataBase::sortingPrice()
 void DataBase::sortingNom()
 {
 	// make heap
-	for (int i = 8 / 2; i >= 0; --i) {
+	for (long long i = 8 / 2; i >= 0; --i) {
 		// shift down each element
-		int pos = i;
-		int posMaxChild;
+		long long pos = i;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * pos + 1) < 8) {
 			if (posMaxChild + 1 < 8) {
 				if (data->getNomFli()[posMaxChild] < data->getNomFli()[posMaxChild + 1]) {
@@ -571,14 +571,14 @@ void DataBase::sortingNom()
 		}
 	}
 	// shift down each element
-	int heapSize = 8;
+	long long heapSize = 8;
 	for (int step = 1; step < 8; ++step) {
 		if (data->getNomFli()[heapSize - 1] < data->getNomFli()[0]) {
 			std::swap(data[heapSize - 1], data[0]);
 		}
 		--heapSize;
-		int position = 0;
-		int posMaxChild;
+		long long position = 0;
+		long long posMaxChild;
 		while ((posMaxChild = 2 * position + 1) < heapSize) {// Пока есть левый потомок
 			if (posMaxChild + 1 < heapSize) { // Есть ещё кто-то и справа
 				if (data->getNomFli()[posMaxChild] < data->getNomFli()[posMaxChild + 1]) {
@@ -600,7 +600,7 @@ void DataBase::print()
 {
 	DataBase tmp=*this;
 	tmp.sortingDNP();
-	for (int i = 0; i < size; ++i)
+	for (unsigned long long i = 0; i < size; ++i)
 	{
 		std::cout << tmp.data[i].getID() << ", " << tmp.data[i].getNomFli() << ", " << tmp.data[i].getAirFrom();
 		std::cout << ", " << tmp.data[i].getAirTo() << ", " << tmp.data[i].getDataFrom() << ", " << tmp.data[i].getDataTo();
@@ -611,7 +611,7 @@ void DataBase::print()
 unsigned int DataBase::load(unsigned char* str, unsigned int strSize)
 {
 	Arry fileName;
-	for (int i = 5; i < strSize; ++i)
+	for (unsigned long long i = 5; i < strSize; ++i)
 	{
 		if (str[i] != '\0')
 		{
@@ -651,7 +651,7 @@ unsigned int DataBase::load(unsigned char* str, unsigned int strSize)
 	long double price = 0;
 	unsigned int newID = 0;
 	unsigned int maxID = 0;
-	for (int i = 0; i < fileSize; ++i)
+	for (unsigned long long i = 0; i < fileSize; ++i)
 	{
 		for (int i = 0; i < 8; ++i)
 		{
@@ -715,7 +715,7 @@ unsigned int DataBase::load(unsigned char* str, unsigned int strSize)
 void DataBase::save(unsigned char* str, unsigned int strSize)
 {
 	Arry fileName;
-	for (int i = 5; i < strSize; ++i)
+	for (unsigned int i = 5; i < strSize; ++i)
 	{
 		if (str[i] != '\0')
 		{
@@ -770,7 +770,7 @@ void DataBase::save(unsigned char* str, unsigned int strSize)
 void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 {
 	Arry airFrom;
-	for (int i = 9; i < strSize; ++i)
+	for (unsigned int i = 9; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -781,12 +781,12 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 			break;
 		}
 	}
-	for (int i = airFrom.size; i < 4; ++i)
+	for (unsigned long long i = airFrom.size; i < 4; ++i)
 	{
 		airFrom.addElement('\0');
 	}
 	Arry DTFrom;
-	for (int i = 9 + airFrom.size; i < strSize; ++i)
+	for (unsigned long long i = 9 + airFrom.size; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -814,7 +814,7 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 		return;
 	}
 	DataBase tmpDB;
-	for (int i = 0; i < size; ++i)
+	for (unsigned long long i = 0; i < size; ++i)
 	{
 		if (this->data[i].getDataFrom().getYear() == tmp.getYear() and
 			this->data[i].getDataFrom().getMonth() == tmp.getMonth() and
@@ -835,7 +835,7 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 		}
 	}
 	tmpDB.sortingData();
-	for (int i = 0; i < tmpDB.size; ++i)
+	for (unsigned long long i = 0; i < tmpDB.size; ++i)
 	{
 		bool ok2 = false;
 		if (i == 0 or !(
@@ -863,8 +863,8 @@ void DataBase::schedule(const unsigned char* str, unsigned int strSize)
 void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 {
 	Arry airFrom;
-	unsigned int index = 5;
-	for (int i = index; i < strSize; ++i)
+	unsigned long long index = 5;
+	for (unsigned long long i = index; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -877,11 +877,11 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 	}
 	Arry airTo;
 	index += airFrom.size + 4;
-	for (int i = airFrom.size; i < 4; ++i)
+	for (unsigned long long i = airFrom.size; i < 4; ++i)
 	{
 		airFrom.addElement('\0');
 	}
-	for (int i = index; i < strSize; ++i)
+	for (unsigned long long i = index; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -894,11 +894,11 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 	}
 	Arry DTFrom;
 	index += airTo.size + 4;
-	for (int i = airTo.size; i < 4; ++i)
+	for (unsigned long long i = airTo.size; i < 4; ++i)
 	{
 		airTo.addElement('\0');
 	}
-	for (int i = index; i < strSize; ++i)
+	for (unsigned long long i = index; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -959,7 +959,7 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 		std::cout << "no tickets" << std::endl;
 		return;
 	}
-	for (int i = 0; i < tmpDB.size; ++i)
+	for (unsigned long long i = 0; i < tmpDB.size; ++i)
 	{
 		std::cout << tmpDB.data[i].getNomFli() << ", " << tmpDB.data[i].getAirFrom() << ", " <<
 			tmpDB.data[i].getAirTo() << ", " << tmpDB.data[i].getDataFrom() << ", " <<
@@ -972,7 +972,7 @@ void DataBase::fromTo(const unsigned char* str, unsigned int strSize)
 void DataBase::find(const unsigned char* str, unsigned int strSize)
 {
 	Arry airFrom;
-	for (int i = 5; i < strSize; ++i)
+	for (unsigned long long i = 5; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -984,7 +984,7 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 		}
 	}
 	Arry airTo;
-	for (int i = 5 + airFrom.size + 4; i < strSize; ++i)
+	for (unsigned long long i = 5 + airFrom.size + 4; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -995,11 +995,11 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 			break;
 		}
 	}
-	for (int i = airFrom.size; i < 4; ++i)
+	for (unsigned long long i = airFrom.size; i < 4; ++i)
 	{
 		airFrom.addElement('\0');
 	}
-	for (int i = airTo.size; i < 4; ++i)
+	for (unsigned long long i = airTo.size; i < 4; ++i)
 	{
 		airTo.addElement('\0');
 	}
@@ -1064,7 +1064,7 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 	{
 		std::cout << "no tickets" << std::endl;
 	}
-	else if (!prOk and tmp.size != 0)
+	else if ((!prOk and tmp.size != 0) or (prOk and tmp.size != 0 and tmp.data[0].getPrice() <= minPrice))
 	{
 		std::cout << tmp.data[0].getNomFli() << ", " << tmp.data[0].getAirFrom() << ", " <<
 			tmp.data[0].getAirTo() << ", " << tmp.data[0].getDataFrom() << ", " <<
@@ -1072,28 +1072,7 @@ void DataBase::find(const unsigned char* str, unsigned int strSize)
 			std::fixed << std::setprecision(2) <<
 			tmp.data[0].getPrice() << std::endl;
 	}
-	else if(prOk and tmp.size==0)
-	{
-		std::cout << min1.getNomFli() << ", " << min1.getAirFrom() << ", " <<
-			min1.getAirTo() << ", " << min1.getDataFrom() << ", " <<
-			min1.getDataTo() << ", " << min1.getCntTickets() << ", " <<
-			std::fixed << std::setprecision(2) <<
-			min1.getPrice() << std::endl;
-		std::cout << min2.getNomFli() << ", " << min2.getAirFrom() << ", " <<
-			min2.getAirTo() << ", " << min2.getDataFrom() << ", " <<
-			min2.getDataTo() << ", " << min2.getCntTickets() << ", " <<
-			std::fixed << std::setprecision(2) <<
-			min2.getPrice() << std::endl;
-	}
-	else if (prOk and tmp.size != 0 and tmp.data[0].getPrice() <= minPrice)
-	{
-		std::cout << tmp.data[0].getNomFli() << ", " << tmp.data[0].getAirFrom() << ", " <<
-			tmp.data[0].getAirTo() << ", " << tmp.data[0].getDataFrom() << ", " <<
-			tmp.data[0].getDataTo() << ", " << tmp.data[0].getCntTickets() << ", " <<
-			std::fixed << std::setprecision(2) <<
-			tmp.data[0].getPrice() << std::endl;
-	}
-	else if (prOk and tmp.size != 0 and tmp.data[0].getPrice() > minPrice)
+	else if((prOk and tmp.size==0)or (prOk and tmp.size != 0 and tmp.data[0].getPrice() > minPrice))
 	{
 		std::cout << min1.getNomFli() << ", " << min1.getAirFrom() << ", " <<
 			min1.getAirTo() << ", " << min1.getDataFrom() << ", " <<
@@ -1122,17 +1101,17 @@ void DataBase::buy(const unsigned char* str, unsigned int strSize)
 			break;
 		}
 	}
-	for (int i = NomFli.size; i < 8; ++i)
+	for (unsigned long long i = NomFli.size; i < 8; ++i)
 	{
 		NomFli.addElement('\0');
 	}
 	Arry DTFrom;
-	int Index = 3 + NomFli.size;
+	unsigned long long Index = 3 + NomFli.size;
 	if (str[Index] == ' ')
 	{
 		++Index;
 	}
-	for (int i = Index; i < strSize; ++i)
+	for (unsigned long long i = Index; i < strSize; ++i)
 	{
 		if (str[i] != ' ' and str[i] != 0)
 		{
@@ -1251,10 +1230,11 @@ void DataBase::swap(DataBase& other)
 	std::swap(size, other.size);
 }
 
-unsigned long long int DataBase::getIndex(const unsigned int ID) const
+unsigned long long int DataBase::getIndex(unsigned int ID) const
 {
 	for (int i = 0; i < size; ++i)
 	{
 		if (this->data[i].getID() == ID) { return i; }
 	}
+	return 0;
 }
