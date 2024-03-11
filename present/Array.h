@@ -7,6 +7,7 @@ public:
 	unsigned long long int size;
 	unsigned char* m_bytes;
 	Arry(unsigned long long int size=0);
+	Arry(const Arry& X);
 	void addElement(unsigned char elem);
 	void addPhraze(const char* phraze, unsigned int size);
 	//void removeEleent(size_t pos);
@@ -18,6 +19,7 @@ public:
 	{
 		return size;
 	}
+	Arry& operator=(const Arry& X);
 };
 
 #endif // !ARRAY_OUR_WORK

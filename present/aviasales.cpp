@@ -42,6 +42,22 @@ int main()
 			{
 				std::cout << error;
 			}
+			catch (unsigned char day)
+			{
+				std::cout << "Day value is invalid: " << (int)day << std::endl;
+			}
+			catch (const Arry error)
+			{
+				for (int i = 0; i < error.size; ++i)
+				{
+					std::cout << error.m_bytes[i];
+				}
+				std::cout << std::endl;
+			}
+			catch (...)
+			{
+				std::cout << "Unknow command" << std::endl;
+			}
 		}
 		else if (command.m_bytes[0] == 's' and command.m_bytes[1] == 'a' and
 			command.m_bytes[2] == 'v' and command.m_bytes[3] == 'e' and command.size == 4)
@@ -53,6 +69,22 @@ int main()
 			catch (const char* error)
 			{
 				std::cout << error;
+			}
+			catch (unsigned char day)
+			{
+				std::cout << "Day value is invalid: " << (int)day << std::endl;
+			}
+			catch (const Arry error)
+			{
+				for (int i = 0; i < error.size; ++i)
+				{
+					std::cout << error.m_bytes[i];
+				}
+				std::cout << std::endl;
+			}
+			catch (...)
+			{
+				std::cout << "Unknow command" << std::endl;
 			}
 		}
 		else if (command.m_bytes[0] == 'a' and command.m_bytes[1] == 'd' and
@@ -69,6 +101,18 @@ int main()
 			catch (unsigned char day)
 			{
 				std::cout << "Day value is invalid: " << (int)day << std::endl;
+			}
+			catch (const Arry error)
+			{
+				for (int i = 0; i < error.size; ++i)
+				{
+					std::cout << error.m_bytes[i];
+				}
+				//std::cout << std::endl;
+			}
+			catch (...)
+			{
+				std::cout << "Unknow command" << std::endl;
 			}
 		}
 		else if (command.m_bytes[0] == 'd' and command.m_bytes[1] == 'e' and
@@ -140,6 +184,22 @@ int main()
 			catch (const char* error)
 			{
 				std::cout << error;
+			}
+			catch (unsigned char day)
+			{
+				std::cout << "Day value is invalid: " << (int)day << std::endl;
+			}
+			catch (const Arry error)
+			{
+				for (int i = 0; i < error.size; ++i)
+				{
+					std::cout << error.m_bytes[i];
+				}
+				std::cout << std::endl;
+			}
+			catch (...)
+			{
+				std::cout << "Unknow command" << std::endl;
 			}
 		}
 		else if(command.size!=0)

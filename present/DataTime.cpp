@@ -2,7 +2,7 @@
 #include "Array.h"
 #include <iostream>
 
-const char* fooError(const char* phraze,unsigned short size, const Arry& data)
+const Arry fooError(const char* phraze,unsigned short size, const Arry& data)
 {
 	Arry error;
 	error.addPhraze(phraze, size);
@@ -10,8 +10,8 @@ const char* fooError(const char* phraze,unsigned short size, const Arry& data)
 	{
 		error.addElement(data.m_bytes[i]);
 	}
-	//error.addElement('\0');
-	return (const char*)error.m_bytes;
+	error.addElement('\0');
+	return error;
 }
 
 DataTime::DataTime(const char* input,unsigned int size)//может бросать исключения
@@ -67,7 +67,14 @@ DataTime::DataTime(const char* input,unsigned int size)//может бросать исключени
 			break;
 		}
 	}
-	day = std::atoi((const char*)dayStr.m_bytes);
+	if (dayStr.size == 4)
+	{
+		throw fooError("Wrong date format: ", 19, data);
+	}
+	else
+	{
+		day = std::atoi((const char*)dayStr.m_bytes);
+	}
 	if ((day < 1) or (day > 31))
 	{
 		//throw fooError("Day value is invalid: ",22, dayStr);

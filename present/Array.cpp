@@ -15,6 +15,16 @@ Arry::Arry(unsigned long long int size)
 	this->size = size;
 }
 
+Arry::Arry(const Arry& X)
+{
+	this->size = X.size;
+	this->m_bytes = new unsigned char[this->size];
+	for (int i = 0; i < this->size; ++i)
+	{
+		this->m_bytes[i] = X.m_bytes[i];
+	}
+}
+
 Arry::~Arry() 
 {
 	delete m_bytes;
@@ -49,4 +59,17 @@ void Arry::addPhraze(const char* phraze, unsigned int size)
 	{
 		this->addElement((unsigned char)phraze[i]);
 	}
+}
+
+#include <iostream>
+Arry& Arry::operator=(const Arry& X)
+{
+	if (this != &X)
+	{
+		delete[]m_bytes;
+		Arry tmp(X);
+		std::swap(this->m_bytes, tmp.m_bytes);
+		std::swap(this->size, tmp.size);
+	}
+	return *this;
 }

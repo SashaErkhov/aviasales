@@ -27,7 +27,12 @@ test:
 	Project2 < ../../Project2/input13.txt > ../../Project2/out13.txt
 	Project2 < ../../Project2/input13.txt > ../../Project2/out14.txt
 	Project2 < ../../Project2/input13.txt > ../../Project2/out15.txt
-	# Project2 < ../../Project2/input13.txt > ../../Project2/out16.txt
+	Project2 < ../../Project2/input13.txt > ../../Project2/out16.txt
+	echo -------------------------
+	Project2 < ../../Project2/inpute1.txt > ../../Project2/oute1.txt
+	# Project2 < ../../Project2/inpute2.txt > ../../Project2/oute2.txt
+	# Project2 < ../../Project2/inpute3.txt > ../../Project2/oute3.txt
+	# Project2 < ../../Project2/inpute4.txt > ../../Project2/oute4.txt
 
 
 testJust : test.o Array.o

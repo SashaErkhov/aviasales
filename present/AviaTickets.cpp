@@ -45,6 +45,26 @@ bool fooKons(Arry& x, const unsigned char* str, unsigned int startIndex, unsigne
 	return false;
 }
 
+bool fooKons2(Arry& x, const unsigned char* str, unsigned int startIndex, unsigned int strSize)
+{
+	for (int i = startIndex; i < strSize; ++i)
+	{
+		if (str[i] != ',' and str[i] != 0 and str[i]!=' ')
+		{
+			x.addElement(str[i]);
+		}
+		else if ((str[i] == ',') or (str[i] == 0) or (str[i] ==' '))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return false;
+}
+
 AviaTickets::AviaTickets()
 {
 	for (int i = 0; i < 7; ++i)
@@ -71,10 +91,12 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	//add номер_рейса, аэропорт_вылета, аэропорт_прибытия, дата_и_время_вылета, дата_и_время_прилёта, количество_билетов, цена
 	//add CA-909, PKX, SVO, 19.02.2024 8:40, 19.02.2024 17:00, 5, 80499
 	Arry newNomFli;
-	if ((!fooKons(newNomFli, str, 4, strSize)) or newNomFli.size > 7)
+	if ((!fooKons2(newNomFli, str, 4, strSize)) or newNomFli.size > 7)
 	{
 		throw "Unknown command";
 	}
+	unsigned int index = 4 + newNomFli.size;
+	while (str[index] == ' ' or str[index] == ',') { ++index; }
 	newNomFli.addElement('\0');
 	for (int i = 0; i < newNomFli.size; ++i)
 	{
@@ -92,13 +114,13 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	{
 		nomberOfFlight[i] = '\0';
 	}
-	unsigned int index = 4 + newNomFli.size + 1;
-	if (str[index] == ' ') { ++index; }
 	Arry airFrom;
-	if ((!fooKons(airFrom, str, index, strSize)) or airFrom.size > 3)
+	if ((!fooKons2(airFrom, str, index, strSize)) or airFrom.size > 3)
 	{
 		throw "Unknown command";
 	}
+	index += airFrom.size;
+	while (str[index] == ' ' or str[index] == ',') { ++index; }
 	airFrom.addElement('\0');
 	for (int i = 0; i < airFrom.size; ++i)
 	{
@@ -116,12 +138,13 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	{
 		airportFrom[i] = '\0';
 	}
-	index += airFrom.size + 1;
 	Arry airTo;
-	if ((!fooKons(airTo, str, index, strSize)) or airTo.size > 3)
+	if ((!fooKons2(airTo, str, index, strSize)) or airTo.size > 3)
 	{
 		throw "Unknown command";
 	}
+	index += airTo.size;
+	while (str[index] == ' ' or str[index] == ',') { ++index; }
 	airTo.addElement('\0');
 	for (int i = 0; i < airTo.size; ++i)
 	{
@@ -140,17 +163,21 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 		airportTo[i] = '\0';
 	}
 	Arry dtFrom;
-	index += airTo.size + 1;
 	if (!fooKons(dtFrom, str, index, strSize))
 	{
 		throw "Unknown command";
 	}
+	index += dtFrom.size;
+	while (str[index] == ' ' or str[index] == ',') { ++index; }
+	dtFrom.addElement('\0');
 	Arry dtTo;
-	index += dtFrom.size + 2;
 	if (!fooKons(dtTo, str, index, strSize))
 	{
 		throw "Unknown command";
 	}
+	index += dtTo.size;
+	while (str[index] == ' ' or str[index] == ',') { ++index; }
+	dtTo.addElement('\0');
 	try
 	{
 		this->DTFrom = DataTime((char*)dtFrom.m_bytes, dtFrom.size);
@@ -164,17 +191,25 @@ AviaTickets::AviaTickets(const unsigned char* str, unsigned int strSize, unsigne
 	{
 		throw day;
 	}
-	index += dtTo.size + 1;
-	if (str[index] == ' ') { ++index; }
+	catch (const Arry error)
+	{
+		throw error;
+	}
+	catch (...)
+	{
+		throw "Unknow command";
+	}
 	Arry cnt;
-	if (!fooKons(cnt, str, index, strSize))
+	if (!fooKons2(cnt, str, index, strSize))
 	{
 		throw "Unknown command";
 	}
+	index += cnt.size;
+	while (str[index] == ' ' or str[index] == ',') { ++index; }
+	cnt.addElement('\0');
 	this->cntTickets = std::atoi((char*)cnt.m_bytes);
 	Arry price;
-	index += cnt.size + 1;
-	if (!fooKons(price, str, index, strSize))
+	if (!fooKons2(price, str, index, strSize))
 	{
 		throw "Unknown command";
 	}
@@ -325,12 +360,13 @@ void DataBase::addElement(const AviaTickets& input)
 
 void DataBase::deleteDB(unsigned int ID)
 {
-	unsigned int index = -1;
+	int index = -1;
 	for (int i = 0; i < size; ++i)
 	{
 		if (this->data[i].getID() == ID)
 		{
 			index = i;
+			break;
 		}
 	}
 	if (index == -1) { return; }
@@ -349,11 +385,21 @@ void DataBase::deleteDB(unsigned int ID)
 
 void DataBase::clearDB()
 {
-	for (int i = 0; i < size; ++i)
+	bool ok = true;
+	if (this->size != 0)
 	{
-		if (this->data[i].getCntTickets() == 0)
+		while (ok)
 		{
-			this->deleteDB(this->data[i].getID());
+			for (unsigned long long i = 0; i < this->size; ++i)
+			{
+				ok = false;
+				if (this->data[i].getCntTickets() == 0)
+				{
+					this->deleteDB(this->data[i].getID());
+					ok = true;
+					break;
+				}
+			}
 		}
 	}
 }
@@ -552,7 +598,7 @@ void DataBase::sortingNom()
 
 void DataBase::print()
 {
-	DataBase tmp(*this);
+	DataBase tmp=*this;
 	tmp.sortingDNP();
 	for (int i = 0; i < size; ++i)
 	{
